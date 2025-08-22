@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Marketplace - FarmConnect</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-tractor me-2"></i>
+                FarmConnect
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="marketplace.html">Crop Marketplace</a></li>
+                    <li class="nav-item"><a class="nav-link" href="equipment.html">Equipment</a></li>
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link auth-link" href="#" onclick="showLogin()">Login/Signup</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Marketplace Header -->
+    <section class="bg-success text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">Crop Marketplace</h1>
+                    <p class="lead">Buy and sell agricultural produce with transparent pricing and fair deals</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <button class="btn btn-light btn-lg" onclick="showSellCropModal()">
+                        <i class="fas fa-plus me-2"></i>Sell Your Crops
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="py-4 bg-light">
+        <div class="container">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <select class="form-select" id="cropTypeFilter">
+                        <option value="all">All Crop Types</option>
+                        <option value="Grains">Grains</option>
+                        <option value="Vegetables">Vegetables</option>
+                        <option value="Fruits">Fruits</option>
+                        <option value="Pulses">Pulses</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select" id="locationFilter">
+                        <option value="all">All Locations</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Search crops..." id="searchInput">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Crops Listing -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row" id="cropsContainer">
+                <!-- Crops will be loaded here dynamically -->
+            </div>
+            
+            <!-- Loading state -->
+            <div id="loadingState" class="text-center py-5">
+                <div class="loading-spinner"></div>
+                <p class="text-muted mt-3">Loading available crops...</p>
+            </div>
+
+            <!-- Empty state -->
+            <div id="emptyState" class="text-center py-5" style="display: none;">
+                <i class="fas fa-seedling fa-4x text-muted mb-3"></i>
+                <h4>No crops found</h4>
+                <p class="text-muted">Try adjusting your filters or check back later for new listings.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Trends -->
+    <section class="bg-light py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Market Trends & Pricing</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Current Market Prices</h5>
+                            <div class="market-trend">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Wheat</span>
+                                    <span class="text-success">₹2,500/100kg ↗</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Tomatoes</span>
+                                    <span class="text-success">₹1,800/100kg ↗</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Rice</span>
+                                    <span class="text-danger">₹4,200/100kg ↘</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Mangoes</span>
+                                    <span class="text-success">₹3,500/100kg ↗</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Price Transparency</h5>
+                            <p class="card-text">Our platform ensures:</p>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Real-time market prices</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>No hidden charges</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Fair pricing algorithms</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Quality-based pricing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sell Crop Modal -->
+    <div class="modal fade" id="sellCropModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sell Your Crops</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="sellCropForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Crop Name *</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Crop Type *</label>
+                                    <select class="form-select" required>
+                                        <option value="">Select Type</option>
+                                        <option value="Grains">Grains</option>
+                                        <option value="Vegetables">Vegetables</option>
+                                        <option value="Fruits">Fruits</option>
+                                        <option value="Pulses">Pulses</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Quantity *</label>
+                                    <input type="number" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Unit *</label>
+                                    <select class="form-select" required>
+                                        <option value="kg">kg</option>
+                                        <option value="quintal">Quintal</option>
+                                        <option value="ton">Ton</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Expected Price *</label>
+                                    <input type="number" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Quality Grade *</label>
+                                    <select class="form-select" required>
+                                        <option value="Grade A">Grade A</option>
+                                        <option value="Grade B">Grade B</option>
+                                        <option value="Grade C">Grade C</option>
+                                        <option value="Organic">Organic</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Location *</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Additional Notes</label>
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">List Crop for Sale</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script src="marketplace.js"></script>
+</body>
+</html>
