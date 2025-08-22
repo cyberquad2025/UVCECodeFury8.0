@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AgriMitra | Login</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #d4fc79, #96e6a1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      width: 350px;
+    }
+    h2 {
+      text-align: center;
+      color: #2d6a4f;
+      margin-bottom: 20px;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #b7e4c7;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    input:focus {
+      border-color: #40916c;
+      outline: none;
+      box-shadow: 0 0 5px rgba(64,145,108,0.4);
+    }
+    button {
+      background: #2d6a4f;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #1b4332;
+    }
+    .switch {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .switch a {
+      color: #2d6a4f;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .switch a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>🌾 Login to AgriMitra</h2>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
+  <div class="switch">
+    <p>Don’t have an account? <a href="signup.html">Signup here</a></p>
+  </div>
+</div>
+
+<script>
+const API = "http://127.0.0.1:5000"; 
+
+document.getElementById("loginForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const res = await fetch(API+"/login", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      email: document.getElementById("loginEmail").value,
+      password: document.getElementById("loginPassword").value
+    })
+  });
+  const data = await res.json();
+  if(data.user){
+    localStorage.setItem("user", JSON.stringify(data.user));
+    window.location = data.user.role==="farmer" ? "farmer.html" : "buyer.html";
+  } else {
+    alert(data.error || "Login failed");
+  }
+});
+</script>
+</body>
+</html>

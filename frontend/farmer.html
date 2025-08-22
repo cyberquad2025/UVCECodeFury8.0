@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AgriMitra | Farmer Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #d4fc79, #96e6a1);
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      width: 500px;
+    }
+    h2, h3 {
+      text-align: center;
+      color: #2d6a4f;
+      margin-bottom: 20px;
+    }
+    form {
+      margin-bottom: 25px;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #b7e4c7;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    input:focus {
+      border-color: #40916c;
+      outline: none;
+      box-shadow: 0 0 5px rgba(64,145,108,0.4);
+    }
+    button {
+      background: #2d6a4f;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #1b4332;
+    }
+    hr {
+      border: none;
+      height: 1px;
+      background: #ccc;
+      margin: 20px 0;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #f8fdf7;
+      padding: 12px 15px;
+      margin: 8px 0;
+      border: 1px solid #d8f3dc;
+      border-radius: 8px;
+      color: #2d6a4f;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logout {
+      display: block;
+      margin-top: 15px;
+      text-align: center;
+      color: #2d6a4f;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .logout:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>🌾 Farmer Dashboard</h2>
+  <form id="cropForm">
+    <input type="text" id="cropName" placeholder="Crop Name" required>
+    <input type="number" id="quantity" placeholder="Quantity" required>
+    <input type="number" id="price" placeholder="Price per unit (₹)" required>
+    <button type="submit">➕ Add Crop</button>
+  </form>
+  <hr>
+  <h3>My Crops</h3>
+  <ul id="myCrops"></ul>
+  <a class="logout" onclick="logout()">🚪 Logout</a>
+</div>
+
+<script>
+const API = "http://127.0.0.1:5000";
+const user = JSON.parse(localStorage.getItem("user") || "{}");
+if(!user.id || user.role!=="farmer") window.location="index.html";
+
+// Add crop
+document.getElementById("cropForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const res = await fetch(API+"/crops", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      farmer_id: user.id,
+      crop_name: document.getElementById("cropName").value,
+      quantity: +document.getElementById("quantity").value,
+      price: +document.getElementById("price").value
+    })
+  });
+  const data = await res.json();
+  alert(data.message || data.error);
+  document.getElementById("cropForm").reset();
+  loadCrops();
+});
+
+// Load crops
+async function loadCrops(){
+  const res = await fetch(API+"/crops?farmer_id="+user.id);
+  const crops = await res.json();
+  document.getElementById("myCrops").innerHTML =
+    crops.map(c=>`<li>
+      <span>${c.crop_name} - ${c.quantity} units @ ₹${c.price}</span>
+    </li>`).join("");
+}
+loadCrops();
+
+function logout(){
+  localStorage.removeItem("user");
+  window.location="index.html";
+}
+</script>
+</body>
+</html>

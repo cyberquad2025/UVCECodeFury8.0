@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AgriMitra | Home</title>
+  <style>
+    :root{
+      --green:#2d6a4f;
+      --light:#d4fc79;
+      --white:#fff;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      color: #fff;
+    }
+
+    /* Weather strip */
+    .weather-strip{
+      display:flex;gap:14px;align-items:center;justify-content:center;
+      padding:10px 16px;background: rgba(0,0,0,0.25);border-bottom:1px solid rgba(255,255,255,0.15);
+      font-size:14px; flex-wrap:wrap
+    }
+    .weather-pill{background: rgba(255,255,255,0.12);padding:6px 10px;border-radius:999px}
+    .weather-city{font-weight:600}
+    .small-muted{opacity:.85}
+
+    /* Navbar */
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(0,0,0,0.2); padding: 15px 40px;
+    }
+    nav .logo { font-size: 22px; font-weight: bold; display:flex;align-items:center;gap:8px; }
+    nav ul { list-style:none; display:flex; gap:25px; margin:0; padding:0; }
+    nav ul li a { text-decoration:none; color:#fff; font-weight:500; transition:.3s; }
+    nav ul li a:hover { color: #d4fc79; }
+
+    /* Ticker */
+    .ticker-wrap { background: rgba(0,0,0,0.25); overflow:hidden; border-top:1px solid rgba(255,255,255,.15); border-bottom:1px solid rgba(255,255,255,.15);}
+    .ticker { display:inline-block; white-space:nowrap; padding:10px 0; animation: scroll 28s linear infinite;}
+    .ticker span { margin:0 30px; }
+    .badge { background:rgba(255,255,255,.15); padding:4px 8px; border-radius:6px; margin-left:6px; }
+
+    @keyframes scroll {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Hero */
+    .hero { display:flex; align-items:center; justify-content:space-between; padding: 60px 10%; min-height: 70vh; }
+    .hero-text { max-width: 600px; }
+    .hero-text h1 { font-size:48px; margin-bottom:20px; font-weight:700; line-height:1.2; }
+    .hero-text p { font-size:18px; margin-bottom:30px; color:#f1f1f1; }
+    .hero-buttons button { padding:12px 24px; font-size:16px; margin-right:15px; border:none; border-radius:8px; cursor:pointer; font-weight:700; transition:.3s;}
+    .btn-primary { background: var(--green); color: var(--white); }
+    .btn-primary:hover { background:#1b4332; }
+    .btn-secondary { background:transparent; color:var(--white); border:2px solid var(--white);}
+    .btn-secondary:hover { background:var(--white); color:var(--green);}
+
+    .hero-img { flex:1; display:flex; justify-content:center; }
+    .hero-img img { max-width:400px; animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+
+    /* Price widget */
+    .widget {
+      margin: 0 10% 40px; background: rgba(255,255,255,0.12);
+      padding: 16px; border-radius:14px; backdrop-filter: blur(2px);
+    }
+    .widget h3 { margin:0 0 10px; }
+    .widget form { display:flex; gap:10px; flex-wrap:wrap; }
+    .widget select, .widget button {
+      padding:10px 12px; border-radius:8px; border:none; font-weight:600;
+    }
+    .widget select { background:#fff; color:#333; }
+    .widget button { background:#2d6a4f; color:#fff; cursor:pointer; }
+    .widget button:hover { background:#1b4332; }
+    .results { margin-top:10px; font-size:14px; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero { flex-direction: column; text-align:center; }
+      .hero-text h1 { font-size:36px; }
+      .hero-img { margin-top: 40px; }
+      nav { padding: 12px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Weather live strip -->
+  <div class="weather-strip" id="weatherStrip">
+    <span class="small-muted">Fetching local weather…</span>
+  </div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">🌾 AgriMitra</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">Crop Marketplace</a></li>
+      <li><a href="#">Equipment</a></li>
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="login.html">Login/Signup</a></li>
+    </ul>
+  </nav>
+
+  <!-- Crop price ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker" id="priceTicker">Loading market prices…</div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Empowering Farmers,<br> Transforming Agriculture</h1>
+      <p>A transparent digital platform connecting farmers with fair markets and affordable equipment.</p>
+      <div class="hero-buttons">
+        <button class="btn-primary" onclick="window.location='farmer.html'">Sell Your Crops</button>
+        <button class="btn-secondary" onclick="window.location='equipment.html'">Find Equipment</button>
+      </div>
+    </div>
+    <div class="hero-img">
+      <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Farming Illustration">
+    </div>
+  </section>
+
+  <!-- Quick price lookup widget -->
+  <div class="widget">
+    <h3>🔎 Check Market Price</h3>
+    <form id="priceForm">
+      <select id="cropSelect">
+        <option value="Wheat">Wheat</option>
+        <option value="Rice">Rice</option>
+        <option value="Maize">Maize</option>
+        <option value="Onion">Onion</option>
+        <option value="Tomato">Tomato</option>
+      </select>
+      <select id="regionSelect">
+        <option value="Maharashtra">Maharashtra</option>
+        <option value="Karnataka">Karnataka</option>
+        <option value="Gujarat">Gujarat</option>
+        <option value="Punjab">Punjab</option>
+        <option value="Tamil Nadu">Tamil Nadu</option>
+      </select>
+      <button type="submit">Get Price</button>
+    </form>
+    <div class="results" id="priceResult"></div>
+  </div>
+
+<script>
+const API = "http://127.0.0.1:5000";
+
+/* ========== WEATHER (auto location via browser + Open-Meteo) ========== */
+async function loadWeather(){
+  const el = document.getElementById('weatherStrip');
+  try{
+    const pos = await new Promise((resolve, reject)=>{
+      navigator.geolocation.getCurrentPosition(resolve, reject, {enableHighAccuracy:true, timeout:8000});
+    });
+    const {latitude:lat, longitude:lon} = pos.coords;
+
+    // Fetch current weather from Open-Meteo (no API key)
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,precipitation,wind_speed_10m,weather_code`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const c = data.current || {};
+    const temp = Math.round(c.temperature_2m);
+    const wind = Math.round(c.wind_speed_10m || 0);
+    const rain = (c.precipitation ?? 0);
+
+    // Reverse geocode light (optional): if Permission denied, we still show coords
+    let cityTxt = `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
+    try{
+      const g = await fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${lon}`);
+      const gj = await g.json();
+      const disp = gj?.address?.city || gj?.address?.town || gj?.address?.state || gj?.display_name?.split(',')[0];
+      if(disp) cityTxt = disp;
+    }catch{}
+
+    el.innerHTML = `
+      <span class="weather-pill weather-city">📍 ${cityTxt}</span>
+      <span class="weather-pill">🌡️ ${temp}°C</span>
+      <span class="weather-pill">💨 ${wind} km/h</span>
+      <span class="weather-pill">🌧️ ${rain} mm</span>
+      <span class="small-muted">Live weather for smarter farm decisions</span>
+    `;
+  }catch(err){
+    el.innerHTML = `<span class="weather-pill">⚠️ Location blocked</span>
+                    <span class="small-muted">Enable location to see local weather.</span>`;
+  }
+}
+
+/* ========== TICKER: pull sample prices from your API ========== */
+async function loadTicker(){
+  try{
+    const res = await fetch(`${API}/market_prices?limit=20`);
+    const data = await res.json();
+    if(Array.isArray(data) && data.length){
+      document.getElementById('priceTicker').innerHTML =
+        data.map(p=>{
+          const r = `₹${p.avg_price}/${p.unit}`;
+          return `<span>${p.crop_name} (${p.region}) <span class="badge">${r}</span></span>`;
+        }).join('');
+    }else{
+      document.getElementById('priceTicker').textContent = "No market prices yet. Add some via API.";
+    }
+  }catch(e){
+    document.getElementById('priceTicker').textContent = "Unable to load market prices (API offline).";
+  }
+}
+
+/* ========== Quick Price Lookup ========== */
+document.getElementById('priceForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const crop = document.getElementById('cropSelect').value;
+  const region = document.getElementById('regionSelect').value;
+  const res = await fetch(`${API}/market_prices?crop=${encodeURIComponent(crop)}&region=${encodeURIComponent(region)}`);
+  const data = await res.json();
+  const p = data[0];
+  document.getElementById('priceResult').innerHTML = p
+    ? `Average price for <b>${crop}</b> in <b>${region}</b>: <b>₹${p.avg_price}/${p.unit}</b> (range ₹${p.min_price}–₹${p.max_price})`
+    : `No price found for <b>${crop}</b> in <b>${region}</b>.`;
+});
+
+loadWeather();
+loadTicker();
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Buyer Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Buyer Dashboard</h2>
+  <h3>Available Crops</h3>
+  <ul id="cropList"></ul>
+</div>
+<script>
+const API = "http://127.0.0.1:5000";
+const user = JSON.parse(localStorage.getItem("user") || "{}");
+if(!user.id || user.role!=="buyer") window.location="index.html";
+
+async function loadCrops(){
+  const res = await fetch(API+"/crops");
+  const crops = await res.json();
+  document.getElementById("cropList").innerHTML =
+    crops.map(c=>`<li>${c.crop_name} - ${c.quantity} @ ₹${c.price} 
+      <button onclick="placeOrder(${c.id})">Order</button></li>`).join("");
+}
+
+async function placeOrder(cropId){
+  const res = await fetch(API+"/orders", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      crop_id: cropId,
+      buyer_id: user.id,
+      bid_price: null
+    })
+  });
+  alert((await res.json()).message);
+}
+
+loadCrops();
+</script>
+</body>
+</html>

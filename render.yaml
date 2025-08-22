@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: agrimitra-flask
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    envVars:
+      - key: DB_PATH
+        value: database.db
