@@ -3,112 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <title>AgriMitra | Farmer Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root {
+      --green: #2d6a4f;
+      --dark: #1b4332;
+      --light: #d8f3dc;
+      --bg: #f6fff9;
+    }
+    * { box-sizing: border-box; }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #d4fc79, #96e6a1);
       margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 40px 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: #222;
     }
-    .container {
-      background: #fff;
-      padding: 30px 25px;
-      border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-      width: 500px;
-    }
-    h2, h3 {
-      text-align: center;
-      color: #2d6a4f;
-      margin-bottom: 20px;
-    }
-    form {
-      margin-bottom: 25px;
-    }
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: 1px solid #b7e4c7;
-      border-radius: 8px;
+
+    /* Weather Strip */
+    .weather-strip {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      padding:8px;
+      background: #40916c;
+      color:#fff;
       font-size: 14px;
+      flex-wrap:wrap;
+    }
+    .weather-pill {
+      background: rgba(255,255,255,0.2);
+      padding:4px 10px;
+      border-radius: 999px;
+      font-weight:600;
+    }
+
+    /* Navbar */
+    nav {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background: var(--green);
+      color:#fff;
+      padding:12px 20px;
+      position:relative;
+    }
+    .logo { font-size:20px; font-weight:bold; }
+    nav ul { list-style:none; display:flex; gap:20px; margin:0; padding:0; }
+    nav a { color:#fff; text-decoration:none; font-weight:500; }
+    nav a:hover { text-decoration:underline; }
+
+    /* Hamburger */
+    .menu-toggle { display:none; font-size:26px; cursor:pointer; }
+    @media(max-width:768px){
+      nav ul { display:none; flex-direction:column; gap:14px; background:rgba(0,0,0,0.9);
+               position:absolute; top:100%; left:0; width:100%; padding:18px 0; text-align:center; }
+      nav ul.show { display:flex; }
+      .menu-toggle { display:block; }
+    }
+
+    /* Layout */
+    .container {
+      display:flex;
+      padding:20px;
+      gap:20px;
+    }
+    .sidebar {
+      flex:0 0 220px;
+      background:#fff;
+      padding:20px;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+      height:fit-content;
+    }
+    .sidebar h3 {
+      margin-top:0;
+      color: var(--green);
+      font-size:18px;
+    }
+    .sidebar ul { list-style:none; padding:0; margin:0; }
+    .sidebar li { margin:10px 0; }
+    .sidebar a { text-decoration:none; color:#333; font-weight:500; }
+    .sidebar a:hover { color:var(--green); }
+
+    .main {
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+
+    /* Cards */
+    .card {
+      background:#fff;
+      padding:20px;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+    .card h2 { margin-top:0; color: var(--green); }
+
+    input, button {
+      width:100%;
+      padding:12px;
+      margin:8px 0;
+      border:1px solid #ccc;
+      border-radius:8px;
+      font-size:14px;
     }
     input:focus {
-      border-color: #40916c;
-      outline: none;
-      box-shadow: 0 0 5px rgba(64,145,108,0.4);
+      border-color: var(--green);
+      outline:none;
+      box-shadow:0 0 5px rgba(64,145,108,0.3);
     }
     button {
-      background: #2d6a4f;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      transition: background 0.3s;
+      background: var(--green);
+      color:#fff;
+      font-weight:bold;
+      cursor:pointer;
+      border:none;
+      transition:0.3s;
     }
-    button:hover {
-      background: #1b4332;
+    button:hover { background: var(--dark); }
+
+    ul.crops {
+      list-style:none; padding:0; margin:0;
     }
-    hr {
-      border: none;
-      height: 1px;
-      background: #ccc;
-      margin: 20px 0;
+    ul.crops li {
+      padding:12px;
+      border:1px solid #eee;
+      border-radius:8px;
+      margin-bottom:8px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:#f8fdf7;
+      flex-wrap:wrap;
     }
-    ul {
-      list-style: none;
-      padding: 0;
+    ul.crops span { font-weight:500; }
+
+    /* Responsive */
+    @media(max-width:900px){
+      .container { flex-direction:column; }
+      .sidebar { flex:none; }
     }
-    li {
-      background: #f8fdf7;
-      padding: 12px 15px;
-      margin: 8px 0;
-      border: 1px solid #d8f3dc;
-      border-radius: 8px;
-      color: #2d6a4f;
-      font-weight: 500;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logout {
-      display: block;
-      margin-top: 15px;
-      text-align: center;
-      color: #2d6a4f;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .logout:hover {
-      text-decoration: underline;
+    @media(max-width:600px){
+      .card { padding:16px; }
+      input, button { font-size:13px; padding:10px; }
+      .sidebar { padding:16px; }
+      .sidebar h3 { font-size:16px; }
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <h2>🌾 Farmer Dashboard</h2>
-  <form id="cropForm">
-    <input type="text" id="cropName" placeholder="Crop Name" required>
-    <input type="number" id="quantity" placeholder="Quantity" required>
-    <input type="number" id="price" placeholder="Price per unit (₹)" required>
-    <button type="submit">➕ Add Crop</button>
-  </form>
-  <hr>
-  <h3>My Crops</h3>
-  <ul id="myCrops"></ul>
-  <a class="logout" onclick="logout()">🚪 Logout</a>
-</div>
+
+  <!-- Weather -->
+  <div class="weather-strip" id="weatherStrip">
+    <span>Loading weather...</span>
+  </div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">🌾 AgriMitra</div>
+    <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+    <ul id="navbar-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="marketplace.html">Crop Marketplace</a></li>
+      <li><a href="equipment.html">Equipment</a></li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- Layout -->
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h3>Farmer Menu</h3>
+      <ul>
+        <li><a href="#addCrop">➕ Add Crop</a></li>
+        <li><a href="#myCrops">🌱 My Crops</a></li>
+        <li><a href="#insights">📊 Market Insights</a></li>
+      </ul>
+    </div>
+
+    <!-- Main content -->
+    <div class="main">
+      <div class="card" id="addCrop">
+        <h2>➕ Add New Crop</h2>
+        <form id="cropForm">
+          <input type="text" id="cropName" placeholder="Crop Name" required>
+          <input type="number" id="quantity" placeholder="Quantity" required>
+          <input type="number" id="price" placeholder="Price per unit (₹)" required>
+          <button type="submit">Add Crop</button>
+        </form>
+      </div>
+
+      <div class="card" id="myCrops">
+        <h2>🌱 My Crops</h2>
+        <ul class="crops" id="cropsList"></ul>
+      </div>
+
+      <div class="card" id="insights">
+        <h2>📊 Market Insights</h2>
+        <p>Coming soon: price comparison graphs, demand forecasts and more.</p>
+      </div>
+    </div>
+  </div>
 
 <script>
 const API = "http://127.0.0.1:5000";
 const user = JSON.parse(localStorage.getItem("user") || "{}");
 if(!user.id || user.role!=="farmer") window.location="index.html";
 
-// Add crop
+/* Navbar toggle */
+function toggleMenu(){
+  document.getElementById("navbar-links").classList.toggle("show");
+}
+
+/* Logout */
+function logout(){
+  localStorage.removeItem("user");
+  window.location="index.html";
+}
+
+/* Add Crop */
 document.getElementById("cropForm").addEventListener("submit", async (e)=>{
   e.preventDefault();
   const res = await fetch(API+"/crops", {
@@ -127,21 +244,33 @@ document.getElementById("cropForm").addEventListener("submit", async (e)=>{
   loadCrops();
 });
 
-// Load crops
+/* Load Crops */
 async function loadCrops(){
   const res = await fetch(API+"/crops?farmer_id="+user.id);
   const crops = await res.json();
-  document.getElementById("myCrops").innerHTML =
-    crops.map(c=>`<li>
-      <span>${c.crop_name} - ${c.quantity} units @ ₹${c.price}</span>
-    </li>`).join("");
+  document.getElementById("cropsList").innerHTML =
+    crops.map(c=>`<li><span>${c.crop_name} - ${c.quantity} units @ ₹${c.price}</span></li>`).join("");
 }
 loadCrops();
 
-function logout(){
-  localStorage.removeItem("user");
-  window.location="index.html";
+/* Weather */
+async function loadWeather(){
+  const el = document.getElementById('weatherStrip');
+  try {
+    const pos = await new Promise((resolve,reject)=>{
+      navigator.geolocation.getCurrentPosition(resolve,reject);
+    });
+    const {latitude:lat,longitude:lon}=pos.coords;
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+    const j=await r.json();
+    const w=j.current_weather;
+    el.innerHTML = `<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
+                    <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
+  }catch(e){
+    el.innerHTML = `<span>Weather unavailable</span>`;
+  }
 }
+loadWeather();
 </script>
 </body>
 </html>

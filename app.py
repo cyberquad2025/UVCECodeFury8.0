@@ -1,31 +1,76 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, abort
 from flask_cors import CORS
 import sqlite3
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
+from pathlib import Path
+import datetime
 
 DB_PATH = os.environ.get("DB_PATH", "database.db")
+FRONTEND_DIR = "frontend"
 
-app = Flask(__name__, static_folder="frontend", static_url_path="")
-CORS(app, resources={r"/*": {"origins": "*"}})  # allow Netlify or any origin for hackathon
+app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path="")
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
-# ---------- Database ----------
+# ---------- Database helpers ----------
 def get_db():
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
 
 def init_db():
-    with open("schema.sql", "r", encoding="utf-8") as f:
-        schema = f.read()
+    # run schema.sql if exists
+    schema_path = Path("schema.sql")
+    if schema_path.exists():
+        with open(schema_path, "r", encoding="utf-8") as f:
+            schema = f.read()
+        conn = get_db()
+        conn.executescript(schema)
+        conn.commit()
+        conn.close()
+
+    # Ensure market_prices table exists (useful if schema.sql wasn't updated)
     conn = get_db()
-    conn.executescript(schema)
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS market_prices (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      crop_name TEXT NOT NULL,
+      region TEXT NOT NULL,
+      min_price REAL NOT NULL,
+      max_price REAL NOT NULL,
+      avg_price REAL NOT NULL,
+      unit TEXT NOT NULL DEFAULT 'kg',
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
     conn.commit()
+
+    # Seed sample data if table empty
+    cur = conn.execute("SELECT COUNT(*) as cnt FROM market_prices")
+    cnt = cur.fetchone()["cnt"]
+    if cnt == 0:
+        sample = [
+            ("Wheat","Punjab",18,24,21,"kg"),
+            ("Wheat","Maharashtra",17,23,20,"kg"),
+            ("Rice","Tamil Nadu",22,30,26,"kg"),
+            ("Maize","Karnataka",14,19,16.5,"kg"),
+            ("Onion","Maharashtra",12,20,16,"kg"),
+            ("Tomato","Karnataka",8,16,12,"kg")
+        ]
+        for entry in sample:
+            conn.execute("""INSERT INTO market_prices
+                            (crop_name,region,min_price,max_price,avg_price,unit,updated_at)
+                            VALUES (?,?,?,?,?,?,?)""",
+                         (entry[0],entry[1],entry[2],entry[3],entry[4],entry[5], datetime.datetime.utcnow()))
+        conn.commit()
     conn.close()
 
 # Initialize DB if first run
 if not os.path.exists(DB_PATH):
+    init_db()
+else:
+    # still ensure market_prices table exists/seeded
     init_db()
 
 
@@ -35,7 +80,7 @@ def health():
     return jsonify({"ok": True, "service": "AgriMitra Flask API", "db": os.path.abspath(DB_PATH)})
 
 
-# ---------- Auth ----------
+# ---------- Auth (signup/login) ----------
 @app.post("/signup")
 def signup():
     data = request.get_json(force=True)
@@ -137,16 +182,8 @@ def list_crops():
     conn.close()
     return jsonify(rows)
 
-@app.delete("/crops/<int:crop_id>")
-def delete_crop(crop_id):
-    conn = get_db()
-    conn.execute("DELETE FROM crops WHERE id = ?", (crop_id,))
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Crop deleted"})
 
-
-# ---------- Orders / Bids ----------
+# ---------- Orders ----------
 @app.post("/orders")
 def create_order():
     data = request.get_json(force=True)
@@ -166,47 +203,6 @@ def create_order():
     oid = cur.lastrowid
     conn.close()
     return jsonify({"message": "Order/Bid placed", "id": oid})
-
-@app.get("/orders")
-def list_orders():
-    buyer_id = request.args.get("buyer_id")
-    farmer_id = request.args.get("farmer_id")
-    status = request.args.get("status")
-
-    sql = """SELECT o.*, c.crop_name, c.farmer_id, u.name as buyer_name
-             FROM orders o
-             JOIN crops c ON c.id = o.crop_id
-             JOIN users u ON u.id = o.buyer_id
-             WHERE 1=1"""
-    params = []
-    if buyer_id:
-        sql += " AND o.buyer_id = ?"
-        params.append(buyer_id)
-    if farmer_id:
-        sql += " AND c.farmer_id = ?"
-        params.append(farmer_id)
-    if status:
-        sql += " AND o.status = ?"
-        params.append(status)
-
-    conn = get_db()
-    cur = conn.execute(sql, tuple(params))
-    rows = [dict(r) for r in cur.fetchall()]
-    conn.close()
-    return jsonify(rows)
-
-@app.patch("/orders/<int:order_id>")
-def update_order_status(order_id):
-    data = request.get_json(force=True)
-    status = data.get("status")
-    if status not in ("pending","accepted","rejected","bought"):
-        return jsonify({"error": "Invalid status"}), 400
-
-    conn = get_db()
-    conn.execute("UPDATE orders SET status = ? WHERE id = ?", (status, order_id))
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Order updated"})
 
 
 # ---------- Equipment ----------
@@ -241,7 +237,7 @@ def list_equipment():
     params = []
     if available is not None:
         sql += " AND e.available = ?"
-        params.append(available)
+        params.append(int(available))
     if farmer_id:
         sql += " AND e.farmer_id = ?"
         params.append(farmer_id)
@@ -251,14 +247,6 @@ def list_equipment():
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()
     return jsonify(rows)
-
-@app.delete("/equipment/<int:equip_id>")
-def delete_equipment(equip_id):
-    conn = get_db()
-    conn.execute("DELETE FROM equipment WHERE id = ?", (equip_id,))
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Equipment deleted"})
 
 
 # ---------- Rentals ----------
@@ -304,18 +292,74 @@ def list_rentals():
     return jsonify(rows)
 
 
-# ---------- Frontend ----------
-@app.route("/")
-def serve_index():
-    return send_from_directory(app.static_folder, "index.html")
+# ---------- Market Prices (used by ticker) ----------
+@app.get("/market_prices")
+def get_market_prices():
+    crop = request.args.get("crop")
+    region = request.args.get("region")
+    limit = int(request.args.get("limit", 50))
 
-@app.route("/farmer")
-def serve_farmer():
-    return send_from_directory(app.static_folder, "farmer.html")
+    sql = "SELECT * FROM market_prices WHERE 1=1"
+    params = []
+    if crop:
+        sql += " AND LOWER(crop_name) = ?"
+        params.append(crop.lower())
+    if region:
+        sql += " AND LOWER(region) = ?"
+        params.append(region.lower())
+    sql += " ORDER BY updated_at DESC LIMIT ?"
+    params.append(limit)
 
-@app.route("/buyer")
-def serve_buyer():
-    return send_from_directory(app.static_folder, "buyer.html")
+    conn = get_db()
+    cur = conn.execute(sql, tuple(params))
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return jsonify(rows)
+
+@app.post("/market_prices")
+def add_market_price():
+    data = request.get_json(force=True)
+    need = ["crop_name","region","min_price","max_price","avg_price"]
+    if not all(k in data for k in need):
+        return jsonify({"error":"Missing fields"}), 400
+    unit = data.get("unit","kg")
+    conn = get_db()
+    conn.execute("""INSERT INTO market_prices (crop_name,region,min_price,max_price,avg_price,unit,updated_at)
+                    VALUES (?,?,?,?,?,?,?)""",
+                 (data["crop_name"], data["region"], data["min_price"], data["max_price"], data["avg_price"], unit, datetime.datetime.utcnow()))
+    conn.commit()
+    conn.close()
+    return jsonify({"message":"Price added"})
+
+
+# ---------- Static frontend serving (catch-all) ----------
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_static(path):
+    # Allow API paths to be handled above; here we only serve frontend files.
+    # Normalize and check files in frontend/
+    if path == "":
+        return send_from_directory(app.static_folder, "index.html")
+
+    # If request is for an API (starts with api/market etc), reject here
+    if path.startswith("api") or path.startswith("static") or path.startswith("market_") or path.startswith("crops") or path.startswith("login") or path.startswith("signup") or path.startswith("equipment") and not path.endswith(".html"):
+        # let defined API routes handle them; if not found, return 404
+        # But we only reach here for unmatched paths => 404
+        abort(404)
+
+    # try to serve the file directly
+    candidate = os.path.join(app.static_folder, path)
+    if os.path.exists(candidate) and os.path.isfile(candidate):
+        return send_from_directory(app.static_folder, path)
+
+    # try with .html appended
+    if not path.endswith(".html"):
+        candidate_html = os.path.join(app.static_folder, path + ".html")
+        if os.path.exists(candidate_html):
+            return send_from_directory(app.static_folder, path + ".html")
+
+    # fallback: index (single page apps) if you prefer; for now return 404 JSON
+    return jsonify({"error": "Not found", "path": path}), 404
 
 
 # ---------- Run ----------

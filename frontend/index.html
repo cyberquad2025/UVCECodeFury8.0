@@ -1,46 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>AgriMitra | Home</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    :root{
-      --green:#2d6a4f;
-      --light:#d4fc79;
-      --white:#fff;
+    :root {
+      --green: #2d6a4f;
+      --light: #d4fc79;
+      --white: #fff;
     }
+
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial;
       background: linear-gradient(135deg, #43cea2, #185a9d);
-      color: #fff;
+      color: var(--white);
     }
 
     /* Weather strip */
-    .weather-strip{
-      display:flex;gap:14px;align-items:center;justify-content:center;
-      padding:10px 16px;background: rgba(0,0,0,0.25);border-bottom:1px solid rgba(255,255,255,0.15);
-      font-size:14px; flex-wrap:wrap
+    .weather-strip {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      padding:8px 12px;
+      background: rgba(0,0,0,0.22);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      font-size: 14px;
+      flex-wrap:wrap;
     }
-    .weather-pill{background: rgba(255,255,255,0.12);padding:6px 10px;border-radius:999px}
-    .weather-city{font-weight:600}
-    .small-muted{opacity:.85}
+    .weather-pill {
+      background: rgba(255,255,255,0.12);
+      padding:6px 10px;
+      border-radius: 999px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      font-weight:600;
+    }
+    .small-muted { opacity: .9; font-weight:500; }
 
     /* Navbar */
     nav {
-      display: flex; justify-content: space-between; align-items: center;
-      background: rgba(0,0,0,0.2); padding: 15px 40px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background: rgba(0,0,0,0.18);
+      padding:14px 20px;
+      position:relative;
     }
-    nav .logo { font-size: 22px; font-weight: bold; display:flex;align-items:center;gap:8px; }
-    nav ul { list-style:none; display:flex; gap:25px; margin:0; padding:0; }
-    nav ul li a { text-decoration:none; color:#fff; font-weight:500; transition:.3s; }
-    nav ul li a:hover { color: #d4fc79; }
+    .logo { font-size:20px; font-weight:700; display:flex; gap:8px; align-items:center; }
+    nav ul { list-style:none; display:flex; gap:20px; margin:0; padding:0; align-items:center; }
+    nav a { color:var(--white); text-decoration:none; font-weight:600; }
+    nav a:hover{ color: var(--light); }
+
+    /* Hamburger menu */
+    .menu-toggle{display:none;font-size:26px;cursor:pointer;}
+    @media(max-width:768px){
+      nav ul{display:none;flex-direction:column;gap:14px;background:rgba(0,0,0,0.9);
+             position:absolute;top:100%;left:0;width:100%;padding:18px 0;text-align:center;}
+      nav ul.show{display:flex;}
+      .menu-toggle{display:block;}
+    }
 
     /* Ticker */
-    .ticker-wrap { background: rgba(0,0,0,0.25); overflow:hidden; border-top:1px solid rgba(255,255,255,.15); border-bottom:1px solid rgba(255,255,255,.15);}
-    .ticker { display:inline-block; white-space:nowrap; padding:10px 0; animation: scroll 28s linear infinite;}
-    .ticker span { margin:0 30px; }
-    .badge { background:rgba(255,255,255,.15); padding:4px 8px; border-radius:6px; margin-left:6px; }
+    .ticker-wrap { background: rgba(0,0,0,0.14); overflow:hidden; border-top:1px solid rgba(255,255,255,0.08); border-bottom:1px solid rgba(255,255,255,0.08); }
+    .ticker { display:inline-block; white-space:nowrap; padding:10px 16px; animation: scroll 30s linear infinite; }
+    .ticker span { margin: 0 28px; display:inline-flex; gap:10px; align-items:center; }
+    .badge { background: rgba(255,255,255,0.12); padding:4px 10px; border-radius:6px; font-weight:700; }
 
     @keyframes scroll {
       0% { transform: translateX(100%); }
@@ -48,183 +77,178 @@
     }
 
     /* Hero */
-    .hero { display:flex; align-items:center; justify-content:space-between; padding: 60px 10%; min-height: 70vh; }
-    .hero-text { max-width: 600px; }
-    .hero-text h1 { font-size:48px; margin-bottom:20px; font-weight:700; line-height:1.2; }
-    .hero-text p { font-size:18px; margin-bottom:30px; color:#f1f1f1; }
-    .hero-buttons button { padding:12px 24px; font-size:16px; margin-right:15px; border:none; border-radius:8px; cursor:pointer; font-weight:700; transition:.3s;}
-    .btn-primary { background: var(--green); color: var(--white); }
+    .hero { display:flex; gap:30px; align-items:center; justify-content:space-between; padding:60px 8%; min-height:70vh; flex-wrap:wrap; }
+    .hero-text { max-width:600px; flex:1; }
+    h1 { font-size:44px; margin:0 0 12px; line-height:1.05; font-weight:800; color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.2); }
+    .lead { font-size:17px; color: rgba(255,255,255,0.95); margin-bottom:18px; }
+    .hero-buttons { display:flex; gap:12px; flex-wrap:wrap; }
+    .btn { padding:12px 20px; border-radius:8px; border:0; font-weight:800; cursor:pointer; }
+    .btn-primary { background: var(--green); color:var(--white); }
     .btn-primary:hover { background:#1b4332; }
-    .btn-secondary { background:transparent; color:var(--white); border:2px solid var(--white);}
-    .btn-secondary:hover { background:var(--white); color:var(--green);}
+    .btn-secondary { background:transparent; color:var(--white); border:2px solid rgba(255,255,255,0.18); }
+    .btn-secondary:hover { background:var(--white); color:var(--green); }
 
-    .hero-img { flex:1; display:flex; justify-content:center; }
-    .hero-img img { max-width:400px; animation: float 3s ease-in-out infinite; }
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+    .hero-img { flex:1; display:flex; justify-content:center; align-items:center; }
+    .hero-img img { max-width:420px; width:100%; animation: float 4s ease-in-out infinite; }
 
-    /* Price widget */
-    .widget {
-      margin: 0 10% 40px; background: rgba(255,255,255,0.12);
-      padding: 16px; border-radius:14px; backdrop-filter: blur(2px);
-    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+
+    /* Widget */
+    .widget { margin: 24px 8%; background: rgba(255,255,255,0.08); padding:16px; border-radius:12px; backdrop-filter: blur(2px); color:#fff; max-width:1040px; }
     .widget h3 { margin:0 0 10px; }
-    .widget form { display:flex; gap:10px; flex-wrap:wrap; }
-    .widget select, .widget button {
-      padding:10px 12px; border-radius:8px; border:none; font-weight:600;
-    }
-    .widget select { background:#fff; color:#333; }
-    .widget button { background:#2d6a4f; color:#fff; cursor:pointer; }
-    .widget button:hover { background:#1b4332; }
-    .results { margin-top:10px; font-size:14px; }
+    .widget form { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .widget select, .widget button { padding:10px 12px; border-radius:8px; border: 0; font-weight:700; }
+    .widget select { min-width:140px; background:#fff; color:#222; }
+    .widget button { background:var(--green); color:#fff; border:0; }
+    .results { margin-top:12px; color:#fff; font-weight:600; }
 
-    /* Responsive */
+    /* Responsive tweaks */
     @media (max-width: 900px) {
-      .hero { flex-direction: column; text-align:center; }
-      .hero-text h1 { font-size:36px; }
-      .hero-img { margin-top: 40px; }
-      nav { padding: 12px 18px; }
+      .hero { flex-direction:column-reverse; padding:40px 6%; min-height:auto; text-align:center; }
+      h1 { font-size:34px; }
+      .hero-img img { max-width:300px; }
+      .lead{font-size:15px;}
+      .hero-buttons{justify-content:center;}
+      .ticker{animation-duration:40s;}
+    }
+    @media(max-width:500px){
+      h1{font-size:26px;}
+      .btn{padding:10px 16px;font-size:14px;}
+      .widget{margin:16px 4%;}
+      .widget form{flex-direction:column;align-items:stretch;}
+      .widget select,.widget button{width:100%;}
     }
   </style>
 </head>
 <body>
 
-  <!-- Weather live strip -->
+  <!-- Weather strip -->
   <div class="weather-strip" id="weatherStrip">
-    <span class="small-muted">Fetching local weather…</span>
+    <span class="small-muted">Loading weather…</span>
   </div>
 
   <!-- Navbar -->
   <nav>
     <div class="logo">🌾 AgriMitra</div>
-    <ul>
+    <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+    <ul id="navbar-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="#">Crop Marketplace</a></li>
-      <li><a href="#">Equipment</a></li>
-      <li><a href="#">Dashboard</a></li>
-      <li><a href="login.html">Login/Signup</a></li>
+      <li><a href="marketplace.html">Crop Marketplace</a></li>
+      <li><a href="equipment.html">Equipment</a></li>
+      <li id="dashboard-link" style="display:none;"><a href="#">Dashboard</a></li>
+      <li id="login-link"><a href="login.html">Login/Signup</a></li>
+      <li id="logout-link" style="display:none;"><a href="#" onclick="logout()">Logout</a></li>
     </ul>
   </nav>
 
-  <!-- Crop price ticker -->
+  <!-- Price ticker -->
   <div class="ticker-wrap">
     <div class="ticker" id="priceTicker">Loading market prices…</div>
   </div>
 
-  <!-- Hero Section -->
+  <!-- Hero -->
   <section class="hero">
     <div class="hero-text">
       <h1>Empowering Farmers,<br> Transforming Agriculture</h1>
-      <p>A transparent digital platform connecting farmers with fair markets and affordable equipment.</p>
+      <p class="lead">A transparent platform that helps farmers get fair prices, rent equipment affordably and plan according to weather.</p>
       <div class="hero-buttons">
-        <button class="btn-primary" onclick="window.location='farmer.html'">Sell Your Crops</button>
-        <button class="btn-secondary" onclick="window.location='equipment.html'">Find Equipment</button>
+        <button class="btn btn-primary" onclick="gotoDashboard()">Sell Your Crops</button>
+        <button class="btn btn-secondary" onclick="window.location='equipment.html'">Find Equipment</button>
       </div>
     </div>
+
     <div class="hero-img">
-      <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Farming Illustration">
+      <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Farming illustration">
     </div>
   </section>
 
-  <!-- Quick price lookup widget -->
-  <div class="widget">
+  <!-- Quick Price Lookup -->
+  <div class="widget" id="priceWidget">
     <h3>🔎 Check Market Price</h3>
     <form id="priceForm">
       <select id="cropSelect">
-        <option value="Wheat">Wheat</option>
-        <option value="Rice">Rice</option>
-        <option value="Maize">Maize</option>
-        <option value="Onion">Onion</option>
-        <option value="Tomato">Tomato</option>
+        <option>Wheat</option>
+        <option>Rice</option>
+        <option>Maize</option>
+        <option>Onion</option>
+        <option>Tomato</option>
       </select>
       <select id="regionSelect">
-        <option value="Maharashtra">Maharashtra</option>
-        <option value="Karnataka">Karnataka</option>
-        <option value="Gujarat">Gujarat</option>
-        <option value="Punjab">Punjab</option>
-        <option value="Tamil Nadu">Tamil Nadu</option>
+        <option>Maharashtra</option>
+        <option>Karnataka</option>
+        <option>Gujarat</option>
+        <option>Punjab</option>
+        <option>Tamil Nadu</option>
       </select>
       <button type="submit">Get Price</button>
     </form>
-    <div class="results" id="priceResult"></div>
+    <div class="results" id="priceResult">Get the latest price for your crop and region.</div>
   </div>
 
 <script>
-const API = "http://127.0.0.1:5000";
+function toggleMenu(){
+  document.getElementById("navbar-links").classList.toggle("show");
+}
+const API = (window.location.protocol && window.location.protocol.startsWith('http')) ? window.location.origin : 'http://127.0.0.1:5000';
+/* Navbar logic */
+function updateNavbar(){
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const dash = document.getElementById("dashboard-link");
+  const login = document.getElementById("login-link");
+  const logoutBtn = document.getElementById("logout-link");
+  if(user && user.id){
+    dash.style.display="inline-block";
+    dash.querySelector("a").href = user.role==="farmer" ? "farmer.html":"buyer.html";
+    login.style.display="none"; logoutBtn.style.display="inline-block";
+  } else {
+    dash.style.display="none"; login.style.display="inline-block"; logoutBtn.style.display="none";
+  }
+}
+function logout(){localStorage.removeItem("user");updateNavbar();window.location="index.html";}
+function gotoDashboard(){
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  if(user && user.id){window.location=user.role==="farmer"?"farmer.html":"buyer.html";}
+  else{window.location="login.html";}
+}
+updateNavbar();
 
-/* ========== WEATHER (auto location via browser + Open-Meteo) ========== */
+/* Weather */
 async function loadWeather(){
-  const el = document.getElementById('weatherStrip');
+  const el=document.getElementById('weatherStrip');
   try{
-    const pos = await new Promise((resolve, reject)=>{
-      navigator.geolocation.getCurrentPosition(resolve, reject, {enableHighAccuracy:true, timeout:8000});
-    });
-    const {latitude:lat, longitude:lon} = pos.coords;
-
-    // Fetch current weather from Open-Meteo (no API key)
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,precipitation,wind_speed_10m,weather_code`;
-    const res = await fetch(url);
-    const data = await res.json();
-    const c = data.current || {};
-    const temp = Math.round(c.temperature_2m);
-    const wind = Math.round(c.wind_speed_10m || 0);
-    const rain = (c.precipitation ?? 0);
-
-    // Reverse geocode light (optional): if Permission denied, we still show coords
-    let cityTxt = `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
-    try{
-      const g = await fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${lon}`);
-      const gj = await g.json();
-      const disp = gj?.address?.city || gj?.address?.town || gj?.address?.state || gj?.display_name?.split(',')[0];
-      if(disp) cityTxt = disp;
-    }catch{}
-
-    el.innerHTML = `
-      <span class="weather-pill weather-city">📍 ${cityTxt}</span>
-      <span class="weather-pill">🌡️ ${temp}°C</span>
-      <span class="weather-pill">💨 ${wind} km/h</span>
-      <span class="weather-pill">🌧️ ${rain} mm</span>
-      <span class="small-muted">Live weather for smarter farm decisions</span>
-    `;
-  }catch(err){
-    el.innerHTML = `<span class="weather-pill">⚠️ Location blocked</span>
-                    <span class="small-muted">Enable location to see local weather.</span>`;
-  }
+    const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej));
+    const {latitude:lat,longitude:lon}=pos.coords;
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+    const j=await r.json();const w=j.current_weather;
+    el.innerHTML=`<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
+                  <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
+  }catch(e){el.innerHTML="<span class='weather-pill'>⚠️ Weather unavailable</span>";}
 }
-
-/* ========== TICKER: pull sample prices from your API ========== */
-async function loadTicker(){
-  try{
-    const res = await fetch(`${API}/market_prices?limit=20`);
-    const data = await res.json();
-    if(Array.isArray(data) && data.length){
-      document.getElementById('priceTicker').innerHTML =
-        data.map(p=>{
-          const r = `₹${p.avg_price}/${p.unit}`;
-          return `<span>${p.crop_name} (${p.region}) <span class="badge">${r}</span></span>`;
-        }).join('');
-    }else{
-      document.getElementById('priceTicker').textContent = "No market prices yet. Add some via API.";
-    }
-  }catch(e){
-    document.getElementById('priceTicker').textContent = "Unable to load market prices (API offline).";
-  }
-}
-
-/* ========== Quick Price Lookup ========== */
-document.getElementById('priceForm').addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const crop = document.getElementById('cropSelect').value;
-  const region = document.getElementById('regionSelect').value;
-  const res = await fetch(`${API}/market_prices?crop=${encodeURIComponent(crop)}&region=${encodeURIComponent(region)}`);
-  const data = await res.json();
-  const p = data[0];
-  document.getElementById('priceResult').innerHTML = p
-    ? `Average price for <b>${crop}</b> in <b>${region}</b>: <b>₹${p.avg_price}/${p.unit}</b> (range ₹${p.min_price}–₹${p.max_price})`
-    : `No price found for <b>${crop}</b> in <b>${region}</b>.`;
-});
-
 loadWeather();
-loadTicker();
+
+/* Price ticker */
+async function loadTicker(){
+  const t=document.getElementById('priceTicker');
+  try{const r=await fetch(API+"/market_prices?limit=30");const d=await r.json();
+    if(!Array.isArray(d)||!d.length){t.textContent="No market prices yet.";return;}
+    t.innerHTML=d.map(p=>`<span>${p.crop_name} (${p.region}) <span class='badge'>₹${p.avg_price}/${p.unit}</span></span>`).join(" • ");
+  }catch(e){t.textContent="Unable to load market prices.";}
+}
+loadTicker(); setInterval(loadTicker,60000);
+
+/* Quick lookup */
+document.getElementById('priceForm').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const crop=document.getElementById('cropSelect').value;
+  const region=document.getElementById('regionSelect').value;
+  const out=document.getElementById('priceResult');out.textContent="Checking...";
+  try{const r=await fetch(`${API}/market_prices?crop=${crop}&region=${region}&limit=1`);
+    const arr=await r.json();
+    if(arr.length){const p=arr[0];
+      out.innerHTML=`Average price for <b>${p.crop_name}</b> in <b>${p.region}</b>: <b>₹${p.avg_price}/${p.unit}</b>`;}
+    else{out.textContent=`No price found for ${crop} in ${region}.`;}
+  }catch(e){out.textContent="Cannot fetch prices now.";}
+});
 </script>
 </body>
 </html>

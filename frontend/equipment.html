@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>AgriMitra | Equipment Marketplace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --dark: #1b4332;
+      --bg: #f6fff9;
+      --light: #d8f3dc;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family:'Segoe UI', sans-serif;
+      background: var(--bg);
+      color:#222;
+    }
+
+    /* Weather strip */
+    .weather-strip {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      padding:8px;
+      background: #40916c;
+      color:#fff;
+      font-size:14px;
+      flex-wrap:wrap;
+    }
+    .weather-pill {
+      background: rgba(255,255,255,0.2);
+      padding:4px 10px;
+      border-radius:999px;
+      font-weight:600;
+    }
+
+    /* Navbar */
+    nav {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background: var(--green);
+      color:#fff;
+      padding:12px 20px;
+      position:relative;
+    }
+    .logo { font-size:20px; font-weight:bold; }
+    nav ul { list-style:none; display:flex; gap:20px; }
+    nav a { color:#fff; text-decoration:none; font-weight:500; }
+    nav a:hover { text-decoration:underline; }
+    .menu-toggle { display:none; font-size:26px; cursor:pointer; }
+    @media(max-width:768px){
+      nav ul { display:none; flex-direction:column; background:rgba(0,0,0,0.9);
+               position:absolute; top:100%; left:0; width:100%; padding:16px 0; text-align:center; gap:16px; }
+      nav ul.show { display:flex; }
+      .menu-toggle { display:block; }
+    }
+
+    /* Page container */
+    .container {
+      max-width:1100px;
+      margin:20px auto;
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+
+    h1 { color:var(--green); margin-bottom:6px; }
+    p.lead { color:#555; margin-bottom:20px; }
+
+    /* Equipment grid */
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+      gap:20px;
+    }
+    .card {
+      background:#fff;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      transition:transform 0.2s;
+    }
+    .card:hover { transform:translateY(-4px); }
+    .card h3 { margin:0 0 8px; color:var(--dark); }
+    .card .meta { font-size:14px; color:#555; margin-bottom:8px; }
+    .card .price { font-weight:bold; color:var(--green); margin-bottom:12px; }
+    .card button {
+      background: var(--green);
+      color:#fff;
+      border:none;
+      padding:10px;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:14px;
+      transition:0.2s;
+    }
+    .card button:hover { background: var(--dark); }
+  </style>
+</head>
+<body>
+
+  <!-- Weather -->
+  <div class="weather-strip" id="weatherStrip">
+    <span>Loading weather...</span>
+  </div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">🌾 AgriMitra</div>
+    <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+    <ul id="navbar-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="marketplace.html">Crop Marketplace</a></li>
+      <li><a href="equipment.html">Equipment</a></li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- Page content -->
+  <div class="container">
+    <div>
+      <h1>⚙️ Equipment Marketplace</h1>
+      <p class="lead">Browse and rent farming equipment from nearby farmers</p>
+    </div>
+    <div class="grid" id="list">Loading equipment...</div>
+  </div>
+
+<script>
+const API = "http://127.0.0.1:5000";
+
+/* Toggle Navbar */
+function toggleMenu(){
+  document.getElementById("navbar-links").classList.toggle("show");
+}
+
+/* Logout */
+function logout(){
+  localStorage.removeItem("user");
+  window.location="index.html";
+}
+
+/* Load Equipment */
+async function load(){
+  const res = await fetch(API + "/equipment?available=1");
+  const data = await res.json();
+  const el = document.getElementById("list");
+  if(!data || !data.length){ el.innerHTML = "<p>No equipment listed yet.</p>"; return; }
+  el.innerHTML = data.map(e=>`
+    <div class="card">
+      <div>
+        <h3>${e.name}</h3>
+        <div class="meta">By: ${e.farmer_name || 'Farmer #'+e.farmer_id}</div>
+        <div class="price">₹${e.rent_price}/day</div>
+      </div>
+      <button onclick="book(${e.id})">Book Now</button>
+    </div>
+  `).join("");
+}
+
+/* Book equipment */
+async function book(id){
+  const user = JSON.parse(localStorage.getItem("user")||"{}");
+  if(!user.id){ alert("Please login to book"); window.location="index.html"; return; }
+  const start = prompt("Start date (YYYY-MM-DD)");
+  const end = prompt("End date (YYYY-MM-DD)");
+  if(!start||!end) return;
+  const res = await fetch(API + "/rentals", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ equipment_id:id, user_id:user.id, start_date:start, end_date:end })
+  });
+  const data = await res.json();
+  alert(data.message || data.error);
+}
+load();
+
+/* Weather */
+async function loadWeather(){
+  const el = document.getElementById('weatherStrip');
+  try {
+    const pos = await new Promise((resolve,reject)=>{
+      navigator.geolocation.getCurrentPosition(resolve,reject);
+    });
+    const {latitude:lat,longitude:lon}=pos.coords;
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+    const j=await r.json();
+    const w=j.current_weather;
+    el.innerHTML = `<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
+                    <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
+  }catch(e){
+    el.innerHTML = `<span>Weather unavailable</span>`;
+  }
+}
+loadWeather();
+</script>
+</body>
+</html>
