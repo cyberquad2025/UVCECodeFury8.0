@@ -191,134 +191,169 @@
     <div class="results" id="priceResult">Get the latest price for your crop and region.</div>
   </div>
 
-  <script>
-    // --- Language Support ---
-    const translations = {
-      en: {
-        hero_title: "Empowering Farmers,<br> Transforming Agriculture",
-        hero_lead: "A transparent platform that helps farmers get fair prices, rent equipment affordably and plan according to weather.",
-        sell_btn: "Sell Your Crops",
-        equip_btn: "Find Equipment",
-        widget_title: "🔎 Check Market Price",
-        widget_result: "Get the latest price for your crop and region.",
-        nav_home: "Home",
-        nav_market: "Crop Marketplace",
-        nav_equip: "Equipment",
-        nav_fertilizers: "Fertilizers & Manures",
-        nav_seeds: "Seeds",
-        nav_login: "Login/Signup",
-        nav_dashboard: "Dashboard",
-        nav_logout: "Logout",
-        nav_loan: "Loan Schemes"
-      },
-      // Other languages omitted for brevity
-    };
-    function changeLanguage(){
-      const lang = document.getElementById("langSelect").value;
-      localStorage.setItem("lang", lang);
-      const L = translations[lang] || translations.en;
-      document.querySelector(".hero-text h1").innerHTML = L.hero_title;
-      document.querySelector(".lead").textContent = L.hero_lead;
-      document.querySelector(".btn-primary").textContent = L.sell_btn;
-      document.querySelector(".btn-secondary").textContent = L.equip_btn;
-      document.querySelector("#priceWidget h3").textContent = L.widget_title;
-      document.querySelector("#priceResult").textContent = L.widget_result;
-      document.getElementById("nav-home").textContent = L.nav_home;
-      document.getElementById("nav-market").textContent = L.nav_market;
-      document.getElementById("nav-equip").textContent = L.nav_equip;
-      document.getElementById("nav-fertilizers").textContent = L.nav_fertilizers;
-      document.getElementById("nav-seeds").textContent = L.nav_seeds;
-      document.getElementById("nav-login").textContent = L.nav_login;
-      document.getElementById("nav-dashboard").textContent = L.nav_dashboard;
-      document.getElementById("nav-logout").textContent = L.nav_logout;
-      document.getElementById("nav-loan").textContent = L.nav_loan;
-    }
+<script>
+const translations = {
+  en:{
+    hero_title:"Empowering Farmers,<br> Transforming Agriculture",
+    hero_lead:"A transparent platform that helps farmers get fair prices, rent equipment affordably and plan according to weather.",
+    sell_btn:"Sell Your Crops",
+    equip_btn:"Find Equipment",
+    widget_title:"🔎 Check Market Price",
+    widget_result:"Get the latest price for your crop and region.",
+    nav_home:"Home", nav_market:"Crop Marketplace", nav_equip:"Equipment",
+    nav_fertilizers:"Fertilizers & Manures", nav_seeds:"Seeds", nav_loan:"Loan Schemes",
+    nav_login:"Login/Signup", nav_dashboard:"Dashboard", nav_logout:"Logout"
+  },
+  hi:{
+    hero_title:"किसानों को सशक्त बनाना,<br>कृषि में बदलाव",
+    hero_lead:"एक पारदर्शी प्लेटफ़ॉर्म जो किसानों को उचित मूल्य, सस्ते उपकरण और मौसम के अनुसार योजना बनाने में मदद करता है।",
+    sell_btn:"अपनी फसल बेचें",
+    equip_btn:"उपकरण खोजें",
+    widget_title:"🔎 बाजार मूल्य देखें",
+    widget_result:"अपने फसल और क्षेत्र के लिए नवीनतम मूल्य प्राप्त करें।",
+    nav_home:"होम", nav_market:"बाजार", nav_equip:"उपकरण",
+    nav_fertilizers:"उर्वरक", nav_seeds:"बीज", nav_loan:"ऋण योजना",
+    nav_login:"लॉगिन/साइनअप", nav_dashboard:"डैशबोर्ड", nav_logout:"लॉगआउट"
+  },
+  kn:{
+    hero_title:"ಕೃಷಿಕರನ್ನು ಸಬಲಗೊಳಿಸುವುದು,<br> ಕೃಷಿಯಲ್ಲಿ ಬದಲಾವಣೆ",
+    hero_lead:"ವಿಚಿತ್ರವಾದ ವೇದಿಕೆ, ಇದು ಕೃಷಿಕರಿಗೆ ನ್ಯಾಯಸಮ್ಮತ ಬೆಲೆ, ಸಾಧನಗಳನ್ನು ಸುಲಭವಾಗಿ ಬಾಡಿಗೆಗೆ ಪಡೆಯಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ ಮತ್ತು ಹವಾಮಾನಕ್ಕೆ ತಕ್ಕಂತೆ ಯೋಜನೆ ರೂಪಿಸುತ್ತದೆ.",
+    sell_btn:"ನಿಮ್ಮ ಬೆಳೆಯನ್ನು ಮಾರಾಟಿಸಿ",
+    equip_btn:"ಸಾಧನ ಹುಡುಕಿರಿ",
+    widget_title:"🔎 ಮಾರುಕಟ್ಟೆ ಬೆಲೆ ಪರಿಶೀಲಿಸಿ",
+    widget_result:"ನಿಮ್ಮ ಬೆಳೆಗೆ ಮತ್ತು ಪ್ರಾಂತ್ಯಕ್ಕೆ ತಾಜಾ ಬೆಲೆ ಪಡೆಯಿರಿ.",
+    nav_home:"ಮುಖಪುಟ", nav_market:"ಮಾರುಕಟ್ಟೆ", nav_equip:"ಸಾಧನಗಳು",
+    nav_fertilizers:"ಉರ್ವರಕಗಳು", nav_seeds:"ಬೀಜಗಳು", nav_loan:"ಸಾಲ ಯೋಜನೆಗಳು",
+    nav_login:"ಲಾಗಿನ್/ಸೈನ್‌ಅಪ್", nav_dashboard:"ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", nav_logout:"ಲಾಗ್ ಔಟ್"
+  },
+  te:{
+    hero_title:"వ్యవసాయులకు శక్తివంతం చేయడం,<br> వ్యవసాయంలో మార్పు",
+    hero_lead:"కృష్ణPlatform, ఇది రైతులు సరి అయిన ధరలు పొందడానికి, పరికరాలను అద్దెకు పొందడానికి మరియు వాతావరణానికి అనుగుణంగా ప్రణాళిక రూపొందించడానికి సహాయపడుతుంది.",
+    sell_btn:"మీ పంటను అమ్మండి",
+    equip_btn:"పరికరాలు కనుగొనండి",
+    widget_title:"🔎 మార్కెట్ ధరను తనిఖీ చేయండి",
+    widget_result:"మీ పంట మరియు ప్రాంతానికి తాజా ధరను పొందండి.",
+    nav_home:"హోమ్", nav_market:"మార్కెట్", nav_equip:"పరికరాలు",
+    nav_fertilizers:"ఎరువులు", nav_seeds:"బీజులు", nav_loan:"లోన్ పథకాలు",
+    nav_login:"లాగిన్/సైన్‌అప్", nav_dashboard:"డ్యాష్‌బోర్డ్", nav_logout:"లాగ్ అవుట్"
+  },
+  ta:{
+    hero_title:"விவசாயிகளை அதிகாரப்பூர்வமாக்குதல்,<br> வேளாண்மையில் மாற்றம்",
+    hero_lead:"ஒரு வெளிப்படையான தளம், இது விவசாயிகளுக்கு நியாயமான விலை பெற, கருவிகளை வாடகைக்கு எடுக்க, மற்றும் வானிலைப் போதுமான திட்டமிட உதவுகிறது.",
+    sell_btn:"உங்கள் பயிரை விற்கவும்",
+    equip_btn:"கருவிகளை கண்டறியவும்",
+    widget_title:"🔎 சந்தை விலை சரிபார்க்கவும்",
+    widget_result:"உங்கள் பயிருக்கும் பகுதியிற்கும் சமீபத்திய விலையைப் பெறவும்.",
+    nav_home:"முகப்பு", nav_market:"சந்தை", nav_equip:"கருவிகள்",
+    nav_fertilizers:"உழவர் உரங்கள்", nav_seeds:"விதைகள்", nav_loan:"கடன் திட்டங்கள்",
+    nav_login:"உள்நுழைவு/சைன் அப்", nav_dashboard:"டாஷ்போர்டு", nav_logout:"வெளியேறு"
+  }
+};
 
-    // --- Navbar Toggle ---
-    function toggleMenu(){ document.getElementById("navbar-links").classList.toggle("show"); }
+function changeLanguage(){
+  const lang = document.getElementById("langSelect").value;
+  localStorage.setItem("lang", lang);
+  const L = translations[lang] || translations.en;
 
-    // --- User Login / Dashboard ---
-    function updateNavbar(){
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
-      const dash = document.getElementById("dashboard-link");
-      const login = document.getElementById("login-link");
-      const logoutBtn = document.getElementById("logout-link");
-      if(user && user.id){
-        dash.style.display="inline-block";
-        dash.querySelector("a").href = user.role==="farmer" ? "farmer.html":"buyer.html";
-        login.style.display="none"; logoutBtn.style.display="inline-block";
-      } else {
-        dash.style.display="none"; login.style.display="inline-block"; logoutBtn.style.display="none";
-      }
-    }
-    function logout(){ localStorage.removeItem("user"); updateNavbar(); window.location="index.html"; }
-    function gotoDashboard(){
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
-      if(user && user.id){ window.location=user.role==="farmer"?"farmer.html":"buyer.html"; }
-      else{ window.location="login.html"; }
-    }
-    updateNavbar();
+  document.querySelector(".hero-text h1").innerHTML = L.hero_title;
+  document.querySelector(".lead").textContent = L.hero_lead;
+  document.querySelector(".btn-primary").textContent = L.sell_btn;
+  document.querySelector(".btn-secondary").textContent = L.equip_btn;
+  document.querySelector("#priceWidget h3").textContent = L.widget_title;
+  document.querySelector("#priceResult").textContent = L.widget_result;
 
-    // --- Weather ---
-    async function loadWeather(){
-      const el=document.getElementById('weatherStrip');
-      try{
-        const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej));
-        const {latitude:lat,longitude:lon}=pos.coords;
-        const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-        const j=await r.json();const w=j.current_weather;
-        el.innerHTML=`<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
-                      <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
-      }catch(e){ el.innerHTML="<span class='weather-pill'>⚠️ Weather unavailable</span>"; }
-    }
-    loadWeather();
+  const navIds = ['home','market','equip','fertilizers','seeds','login','dashboard','logout','loan'];
+  navIds.forEach(id => {
+    const el = document.getElementById('nav-' + id);
+    if(el && L['nav_' + id]) el.textContent = L['nav_' + id];
+  });
+}
 
-    // --- Mock market prices ---
-    const mockPrices = [
-      { crop: "Wheat", region: "Maharashtra", price: 220, unit: "kg" },
-      { crop: "Rice", region: "Karnataka", price: 45, unit: "kg" },
-      { crop: "Maize", region: "Gujarat", price: 180, unit: "kg" },
-      { crop: "Onion", region: "Punjab", price: 35, unit: "kg" },
-      { crop: "Tomato", region: "Tamil Nadu", price: 40, unit: "kg" },
-      { crop: "Wheat", region: "Punjab", price: 225, unit: "kg" },
-      { crop: "Rice", region: "Maharashtra", price: 48, unit: "kg" },
-    ];
+// --- Navbar Toggle ---
+function toggleMenu(){ document.getElementById("navbar-links").classList.toggle("show"); }
 
-    // --- Ticker ---
-    function loadTicker(){
-      const t = document.getElementById('priceTicker');
-      t.innerHTML = mockPrices.map(p => 
-        `<span>${p.crop} (${p.region}) <span class='badge'>₹${p.price}/${p.unit}</span></span>`
-      ).join(" • ");
-    }
-    loadTicker();
-    setInterval(loadTicker, 30000);
+// --- User Login / Dashboard ---
+function updateNavbar(){
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const dash = document.getElementById("dashboard-link");
+  const login = document.getElementById("login-link");
+  const logoutBtn = document.getElementById("logout-link");
+  if(user && user.id){
+    dash.style.display="inline-block";
+    dash.querySelector("a").href = user.role==="farmer" ? "farmer.html":"buyer.html";
+    login.style.display="none"; logoutBtn.style.display="inline-block";
+  } else {
+    dash.style.display="none"; login.style.display="inline-block"; logoutBtn.style.display="none";
+  }
+}
+function logout(){ localStorage.removeItem("user"); updateNavbar(); window.location="index.html"; }
+function gotoDashboard(){
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  if(user && user.id){ window.location=user.role==="farmer"?"farmer.html":"buyer.html"; }
+  else{ window.location="login.html"; }
+}
+updateNavbar();
 
-    // --- Price Widget ---
-    function updatePriceWidget(){
-      const crop = document.getElementById('cropSelect').value;
-      const region = document.getElementById('regionSelect').value;
-      const out = document.getElementById('priceResult');
-      out.textContent = "Checking...";
-      const result = mockPrices.find(p => p.crop===crop && p.region===region);
-      if(result){
-        const now = new Date();
-        const ts = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        out.innerHTML = `Average price for <b>${result.crop}</b> in <b>${result.region}</b>: <b>₹${result.price}/${result.unit}</b><br><small>Last updated: ${ts}</small>`;
-      } else {
-        out.textContent = `No price found for ${crop} in ${region}.`;
-      }
-    }
-    document.getElementById('priceForm').addEventListener('submit', ev=>{ ev.preventDefault(); updatePriceWidget(); });
-    setInterval(updatePriceWidget, 60000);
+// --- Weather ---
+async function loadWeather(){
+  const el=document.getElementById('weatherStrip');
+  try{
+    const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej));
+    const {latitude:lat,longitude:lon}=pos.coords;
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+    const j=await r.json();const w=j.current_weather;
+    el.innerHTML=`<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
+                  <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
+  }catch(e){ el.innerHTML="<span class='weather-pill'>⚠️ Weather unavailable</span>"; }
+}
+loadWeather();
 
-    // --- Load saved language ---
-    window.addEventListener("load", ()=>{
-      const savedLang = localStorage.getItem("lang") || "en";
-      document.getElementById("langSelect").value = savedLang;
-      changeLanguage();
-    });
-  </script>
+// --- Mock market prices ---
+const mockPrices = [
+  { crop: "Wheat", region: "Maharashtra", price: 220, unit: "kg" },
+  { crop: "Rice", region: "Karnataka", price: 45, unit: "kg" },
+  { crop: "Maize", region: "Gujarat", price: 180, unit: "kg" },
+  { crop: "Onion", region: "Punjab", price: 35, unit: "kg" },
+  { crop: "Tomato", region: "Tamil Nadu", price: 40, unit: "kg" },
+  { crop: "Wheat", region: "Punjab", price: 225, unit: "kg" },
+  { crop: "Rice", region: "Maharashtra", price: 48, unit: "kg" },
+];
+
+// --- Ticker ---
+function loadTicker(){
+  const t = document.getElementById('priceTicker');
+  t.innerHTML = mockPrices.map(p => 
+    `<span>${p.crop} (${p.region}) <span class='badge'>₹${p.price}/${p.unit}</span></span>`
+  ).join(" • ");
+}
+loadTicker();
+setInterval(loadTicker, 30000);
+
+// --- Price Widget ---
+function updatePriceWidget(){
+  const crop = document.getElementById('cropSelect').value;
+  const region = document.getElementById('regionSelect').value;
+  const out = document.getElementById('priceResult');
+  out.textContent = "Checking...";
+  const result = mockPrices.find(p => p.crop===crop && p.region===region);
+  if(result){
+    const now = new Date();
+    const ts = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    out.innerHTML = `Average price for <b>${result.crop}</b> in <b>${result.region}</b>: <b>₹${result.price}/${result.unit}</b><br><small>Last updated: ${ts}</small>`;
+  } else {
+    out.textContent = `No price found for ${crop} in ${region}.`;
+  }
+}
+document.getElementById('priceForm').addEventListener('submit', ev=>{ ev.preventDefault(); updatePriceWidget(); });
+setInterval(updatePriceWidget, 60000);
+
+// --- Load saved language ---
+window.addEventListener("load", ()=>{
+  const savedLang = localStorage.getItem("lang") || "en";
+  document.getElementById("langSelect").value = savedLang;
+  changeLanguage();
+});
+</script>
 
 </body>
 </html>
