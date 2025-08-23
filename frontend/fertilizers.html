@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AgriMitra | Fertilizers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --green:#2d6a4f;
+      --dark:#1b4332;
+      --light:#d8f3dc;
+      --bg:#f6fff9;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0; font-family:Segoe UI,Arial; background:var(--bg); color:#222;}
+
+    /* Weather Strip */
+    .weather-strip {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      padding:8px 12px;
+      background: rgba(0,0,0,0.22);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      font-size: 14px;
+      flex-wrap:wrap;
+      color: #fff;
+    }
+    .weather-pill {
+      background: rgba(255,255,255,0.12);
+      padding:6px 10px;
+      border-radius: 999px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      font-weight:600;
+    }
+    .small-muted { opacity: .9; font-weight:500; }
+
+    /* Navbar */
+    nav{display:flex; justify-content:space-between; align-items:center;
+        background:var(--green); color:#fff; padding:12px 20px; position:relative;}
+    .logo{font-weight:bold; font-size:20px;}
+    nav ul{list-style:none; display:flex; gap:20px; margin:0; padding:0;}
+    nav a{color:#fff; text-decoration:none; font-weight:500;}
+    nav a:hover{text-decoration:underline;}
+    .menu-toggle{display:none; font-size:26px; cursor:pointer;}
+    @media(max-width:768px){
+      nav ul{display:none; flex-direction:column; gap:14px; background:rgba(0,0,0,0.9);
+             position:absolute; top:100%; left:0; width:100%; padding:18px 0; text-align:center;}
+      nav ul.show{display:flex;}
+      .menu-toggle{display:block;}
+    }
+
+    /* Container */
+    .container{max-width:1100px; margin:20px auto; padding:20px; display:flex; gap:20px;}
+    .main{flex:1; display:flex; flex-direction:column; gap:20px;}
+    .card{background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.08);}
+    .card h1{margin-top:0; color:var(--green);}
+    .list-container{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;}
+    .item-card{background:#f8fdf7; padding:16px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; justify-content:space-between;}
+    .item-card h3{margin:0 0 8px; color:var(--green);}
+    .item-card p{margin:0; color:#666;}
+    .item-card small{color:#999; display:block; margin-top:8px;}
+    
+  </style>
+</head>
+<body>
+
+  <div class="weather-strip" id="weatherStrip">
+    <span class="small-muted">Loading weather…</span>
+  </div>
+
+  <nav>
+    <div class="logo">🌾 AgriMitra</div>
+    <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+    <ul id="navbar-links">
+      <li><a href="index.html" id="nav-home">Home</a></li>
+      <li><a href="marketplace.html" id="nav-market">Crop Marketplace</a></li>
+      <li><a href="equipment.html" id="nav-equip">Equipment</a></li>
+      <li><a href="fertilizers.html" id="nav-fertilizers">Fertilizers & Manures</a></li>
+      <li id="dashboard-link" style="display:none;"><a href="#" id="nav-dashboard">Dashboard</a></li>
+      <li id="login-link"><a href="login.html" id="nav-login">Login/Signup</a></li>
+      <li id="logout-link" style="display:none;"><a href="#" onclick="logout()" id="nav-logout">Logout</a></li>
+    </ul>
+    <select id="langSelect" onchange="changeLanguage()" style="padding:6px;border-radius:6px;font-weight:600;">
+      <option value="en" selected>English</option>
+      <option value="hi">हिन्दी</option>
+      <option value="kn">ಕನ್ನಡ</option>
+      <option value="te">తెలుగు</option>
+      <option value="ta">தமிழ்</option>
+    </select>
+  </nav>
+
+  <div class="container">
+    <div class="main">
+      <div class="card">
+        <h1 id="page-title">Fertilizers & Manures</h1>
+        <p id="page-subtitle">A curated list of essential fertilizers and manures for common crops.</p>
+        <div id="fertilizer-list" class="list-container">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const translations = {
+      en: {
+        nav_home: "Home",
+        nav_market: "Crop Marketplace",
+        nav_equip: "Equipment",
+        nav_fertilizers: "Fertilizers & Manures",
+        nav_login: "Login/Signup",
+        nav_dashboard: "Dashboard",
+        nav_logout: "Logout",
+        page_title: "Fertilizers & Manures",
+        page_subtitle: "A curated list of essential fertilizers and manures for common crops.",
+        loading: "Loading information...",
+        error: "Unable to load information.",
+        coming_soon: "More detailed information on fertilizers and manures is coming soon!"
+      },
+      hi: {
+        nav_home: "होम",
+        nav_market: "फसल बाज़ार",
+        nav_equip: "उपकरण",
+        nav_fertilizers: "उर्वरक और खाद",
+        nav_login: "लॉगिन/साइनअप",
+        nav_dashboard: "डैशबोर्ड",
+        nav_logout: "लॉगआउट",
+        page_title: "उर्वरक और खाद",
+        page_subtitle: "सामान्य फसलों के लिए आवश्यक उर्वरकों और खादों की एक क्यूरेटेड सूची।",
+        loading: "जानकारी लोड हो रही है...",
+        error: "जानकारी लोड करने में असमर्थ।",
+        coming_soon: "उर्वरकों और खादों के बारे में अधिक विस्तृत जानकारी जल्द ही आ रही है!"
+      },
+      kn: {
+        nav_home: "ಹೋಮ್",
+        nav_market: "ಬೆಳೆ ಮಾರುಕಟ್ಟೆ",
+        nav_equip: "ಉಪಕರಣ",
+        nav_fertilizers: "ಗೊಬ್ಬರ ಮತ್ತು ರಸಗೊಬ್ಬರಗಳು",
+        nav_login: "ಲಾಗ್ ಇನ್/ಸೈನ್ ಅಪ್",
+        nav_dashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+        nav_logout: "ಲಾಗ್‌ಔಟ್",
+        page_title: "ಗೊಬ್ಬರ ಮತ್ತು ರಸಗೊಬ್ಬರಗಳು",
+        page_subtitle: "ಸಾಮಾನ್ಯ ಬೆಳೆಗಳಿಗೆ ಅಗತ್ಯವಿರುವ ಗೊಬ್ಬರಗಳು ಮತ್ತು ರಸಗೊಬ್ಬರಗಳ ಕ್ಯುರೇಟೆಡ್ ಪಟ್ಟಿ.",
+        loading: "ಮಾಹಿತಿಯನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+        error: "ಮಾಹಿತಿಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ.",
+        coming_soon: "ಗೊಬ್ಬರ ಮತ್ತು ರಸಗೊಬ್ಬರಗಳ ಕುರಿತು ಇನ್ನಷ್ಟು ವಿವರವಾದ ಮಾಹಿತಿ ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ!"
+      },
+      te: {
+        nav_home: "హోమ్",
+        nav_market: "పంటల మార్కెట్‌ప్లేస్",
+        nav_equip: "పరికరాలు",
+        nav_fertilizers: "ఎరువులు & సేంద్రీయ ఎరువులు",
+        nav_login: "లాగిన్/సైన్అప్",
+        nav_dashboard: "డాష్‌బోర్డ్",
+        nav_logout: "లాగ్అవుట్",
+        page_title: "ఎరువులు & సేంద్రీయ ఎరువులు",
+        page_subtitle: "సాధారణ పంటలకు అవసరమైన ఎరువులు మరియు సేంద్రీయ ఎరువుల క్యూరేటెడ్ జాబితా.",
+        loading: "సమాచారం లోడ్ అవుతోంది...",
+        error: "సమాచారం లోడ్ చేయలేకపోయారు.",
+        coming_soon: "ఎరువులు మరియు సేంద్రీయ ఎరువులపై మరింత వివరణాత్మక సమాచారం త్వరలో రాబోతోంది!"
+      },
+      ta: {
+        nav_home: "முகப்பு",
+        nav_market: "பயிர் சந்தை",
+        nav_equip: "உபகரணங்கள்",
+        nav_fertilizers: "உரங்கள் மற்றும் உரங்கள்",
+        nav_login: "உள்நுழை/பதிவு செய்",
+        nav_dashboard: "டாஷ்போர்ட்",
+        nav_logout: "வெளியேறு",
+        page_title: "உரங்கள் மற்றும் உரங்கள்",
+        page_subtitle: "பொதுவான பயிர்களுக்கு தேவையான உரங்கள் மற்றும் உரங்களின் பட்டியலிடப்பட்ட பட்டியல்.",
+        loading: "தகவல் ஏற்றப்படுகிறது...",
+        error: "தகவலை ஏற்ற முடியவில்லை.",
+        coming_soon: "உரங்கள் மற்றும் உரங்கள் பற்றிய மேலும் விரிவான தகவல்கள் விரைவில் வரவுள்ளன!"
+      }
+    };
+
+    let lang = localStorage.getItem("lang") || "en";
+    const L = translations[lang];
+
+    function toggleMenu(){
+      document.getElementById("navbar-links").classList.toggle("show");
+    }
+
+    /* Weather */
+    async function loadWeather(){
+      const el=document.getElementById('weatherStrip');
+      try{
+        const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej));
+        const {latitude:lat,longitude:lon}=pos.coords;
+        const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        const j=await r.json();const w=j.current_weather;
+        el.innerHTML=`<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
+                      <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
+      }catch(e){el.innerHTML="<span class='weather-pill'>⚠️ Weather unavailable</span>";}
+    }
+
+    /* Navbar logic */
+    function updateNavbar(){
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const dash = document.getElementById("dashboard-link");
+      const login = document.getElementById("login-link");
+      const logoutBtn = document.getElementById("logout-link");
+      if(user && user.id){
+        dash.style.display="inline-block";
+        dash.querySelector("a").href = user.role==="farmer" ? "farmer.html":"buyer.html";
+        login.style.display="none"; logoutBtn.style.display="inline-block";
+      } else {
+        dash.style.display="none"; login.style.display="inline-block"; logoutBtn.style.display="none";
+      }
+    }
+
+    function logout(){
+      localStorage.removeItem("user");
+      updateNavbar();
+      window.location="index.html";
+    }
+
+    /* Language */
+    function changeLanguage(){
+      const lang = document.getElementById("langSelect").value;
+      localStorage.setItem("lang", lang);
+      window.location.reload();
+    }
+
+    function applyTranslations(){
+      document.title = L.page_title;
+      document.getElementById("page-title").textContent = L.page_title;
+      document.getElementById("page-subtitle").textContent = L.page_subtitle;
+      document.getElementById("nav-home").textContent = L.nav_home;
+      document.getElementById("nav-market").textContent = L.nav_market;
+      document.getElementById("nav-equip").textContent = L.nav_equip;
+      document.getElementById("nav-fertilizers").textContent = L.nav_fertilizers;
+      document.getElementById("nav-login").textContent = L.nav_login;
+      document.getElementById("nav-dashboard").textContent = L.nav_dashboard;
+      document.getElementById("nav-logout").textContent = L.nav_logout;
+      document.getElementById("fertilizer-list").innerHTML = `<p>${L.coming_soon}</p>`;
+    }
+
+    window.addEventListener("load", ()=>{
+      const savedLang = localStorage.getItem("lang") || "en";
+      document.getElementById("langSelect").value = savedLang;
+      lang = savedLang; // Make sure the global lang variable is updated
+      applyTranslations();
+      updateNavbar();
+      loadWeather();
+    });
+  </script>
+
+</body>
+</html>

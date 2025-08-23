@@ -40,6 +40,7 @@
     nav a { color:#fff; text-decoration:none; font-weight:500; }
     nav a:hover { text-decoration:underline; }
     .menu-toggle { display:none; font-size:26px; cursor:pointer; }
+    .lang-select { padding:6px; border-radius:6px; font-weight:600; }
     @media(max-width:768px){
       nav ul { display:none; flex-direction:column; gap:14px; background:rgba(0,0,0,0.9);
                position:absolute; top:100%; left:0; width:100%; padding:18px 0; text-align:center; }
@@ -100,7 +101,7 @@
 
   <!-- Weather -->
   <div class="weather-strip" id="weatherStrip">
-    <span>Loading weather...</span>
+    <span id="weatherLoading">Loading weather...</span>
   </div>
 
   <!-- Navbar -->
@@ -108,39 +109,46 @@
     <div class="logo">🌾 AgriMitra</div>
     <span class="menu-toggle" onclick="toggleMenu()">☰</span>
     <ul id="navbar-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="marketplace.html">Crop Marketplace</a></li>
-      <li><a href="equipment.html">Equipment</a></li>
-      <li><a href="#" onclick="logout()">Logout</a></li>
+      <li><a id="nav_home" href="index.html">Home</a></li>
+      <li><a id="nav_market" href="marketplace.html">Crop Marketplace</a></li>
+      <li><a id="nav_equip" href="equipment.html">Equipment</a></li>
+      <li><a id="nav_logout" href="#" onclick="logout()">Logout</a></li>
     </ul>
+    <select id="langSelect" class="lang-select" onchange="changeLanguage()">
+      <option value="en" selected>English</option>
+      <option value="hi">हिन्दी</option>
+      <option value="kn">ಕನ್ನಡ</option>
+      <option value="te">తెలుగు</option>
+      <option value="ta">தமிழ்</option>
+    </select>
   </nav>
 
   <!-- Layout -->
   <div class="container">
     <!-- Sidebar -->
     <div class="sidebar">
-      <h3>Buyer Menu</h3>
+      <h3 id="sb_title">Buyer Menu</h3>
       <ul>
-        <li><a href="#market">🛒 Browse Crops</a></li>
-        <li><a href="#orders">📦 My Orders</a></li>
-        <li><a href="#insights">📊 Market Insights</a></li>
+        <li><a href="#market" id="sb_browse">🛒 Browse Crops</a></li>
+        <li><a href="#orders" id="sb_orders">📦 My Orders</a></li>
+        <li><a href="#insights" id="sb_insights">📊 Market Insights</a></li>
       </ul>
     </div>
 
     <!-- Main -->
     <div class="main">
       <div class="card" id="market">
-        <h2>🛒 Available Crops</h2>
+        <h2 id="card_market">🛒 Available Crops</h2>
         <ul class="crops-list" id="cropsList"></ul>
       </div>
 
       <div class="card" id="orders">
-        <h2>📦 My Orders</h2>
+        <h2 id="card_orders">📦 My Orders</h2>
         <ul class="crops-list" id="ordersList"></ul>
       </div>
 
       <div class="card" id="insights">
-        <h2>📊 Market Insights</h2>
+        <h2 id="card_insights">📊 Market Insights</h2>
         <canvas id="insightsChart"></canvas>
       </div>
     </div>
@@ -157,15 +165,99 @@ function toggleMenu(){ document.getElementById("navbar-links").classList.toggle(
 /* Logout */
 function logout(){ localStorage.removeItem("user"); window.location="index.html"; }
 
+/* ===== Translations ===== */
+const translations = {
+  en: {
+    nav_home:"Home", nav_market:"Crop Marketplace", nav_equip:"Equipment", nav_logout:"Logout",
+    sb_title:"Buyer Menu", sb_browse:"🛒 Browse Crops", sb_orders:"📦 My Orders", sb_insights:"📊 Market Insights",
+    card_market:"🛒 Available Crops", card_orders:"📦 My Orders", card_insights:"📊 Market Insights",
+    list_empty:"No crops listed yet.", buy:"Buy",
+    units:"units", at:"@", farmer:"Farmer",
+    order_item:"Order",
+    chart_avg:"Avg Price (₹)", chart_qty:"Total Units",
+    weather_loading:"Loading weather...", weather_unavail:"Weather unavailable"
+  },
+  hi: {
+    nav_home:"मुखपृष्ठ", nav_market:"फसल बाज़ार", nav_equip:"उपकरण", nav_logout:"लॉगआउट",
+    sb_title:"खरीदार मेनू", sb_browse:"🛒 फसलें देखें", sb_orders:"📦 मेरे ऑर्डर", sb_insights:"📊 बाज़ार विश्लेषण",
+    card_market:"🛒 उपलब्ध फसलें", card_orders:"📦 मेरे ऑर्डर", card_insights:"📊 बाज़ार विश्लेषण",
+    list_empty:"अभी कोई फसल सूचीबद्ध नहीं है।", buy:"खरीदें",
+    units:"यूनिट", at:"@", farmer:"किसान",
+    order_item:"आर्डर",
+    chart_avg:"औसत मूल्य (₹)", chart_qty:"कुल यूनिट",
+    weather_loading:"मौसम लोड हो रहा है...", weather_unavail:"मौसम उपलब्ध नहीं"
+  },
+  kn: {
+    nav_home:"ಮುಖಪುಟ", nav_market:"ಬೆಳೆ ಮಾರುಕಟ್ಟೆ", nav_equip:"ಉಪಕರಣಗಳು", nav_logout:"ಲಾಗ್‌ಔಟ್",
+    sb_title:"ಖರೀದಿದಾರರ ಮೆನು", sb_browse:"🛒 ಬೆಳೆಗಳನ್ನು ನೋಡಿರಿ", sb_orders:"📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು", sb_insights:"📊 ಮಾರುಕಟ್ಟೆ ಒಳನೋಟಗಳು",
+    card_market:"🛒 ಲಭ್ಯವಿರುವ ಬೆಳೆಗಳು", card_orders:"📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು", card_insights:"📊 ಮಾರುಕಟ್ಟೆ ಒಳನೋಟಗಳು",
+    list_empty:"ಇನ್ನೂ ಯಾವುದೇ ಬೆಳೆಗಳಿಲ್ಲ.", buy:"ಖರೀದಿ",
+    units:"ಘಟಕ", at:"@", farmer:"ರೈತ",
+    order_item:"ಆರ್ಡರ್",
+    chart_avg:"ಸರಾಸರಿ ಬೆಲೆ (₹)", chart_qty:"ಒಟ್ಟು ಘಟಕಗಳು",
+    weather_loading:"ಹವಾಮಾನ ಲೋಡ್ ಆಗುತ್ತಿದೆ...", weather_unavail:"ಹವಾಮಾನ ಲಭ್ಯವಿಲ್ಲ"
+  },
+  te: {
+    nav_home:"హోమ్", nav_market:"పంట మార్కెట్", nav_equip:"పరికరాలు", nav_logout:"లాగ్‌ఔట్",
+    sb_title:"కొనుగోలుదారు మెను", sb_browse:"🛒 పంటలను బ్రౌజ్ చేయండి", sb_orders:"📦 నా ఆర్డర్లు", sb_insights:"📊 మార్కెట్ లోతులు",
+    card_market:"🛒 లభ్యమైన పంటలు", card_orders:"📦 నా ఆర్డర్లు", card_insights:"📊 మార్కెట్ లోతులు",
+    list_empty:"ఇంకా పంటలు లిస్టు కాలేదు.", buy:"కొనండి",
+    units:"యూనిట్స్", at:"@", farmer:"రైతు",
+    order_item:"ఆర్డర్",
+    chart_avg:"సగటు ధర (₹)", chart_qty:"మొత్తం యూనిట్స్",
+    weather_loading:"వాతావరణం లోడ్ అవుతోంది...", weather_unavail:"వాతావరణం అందుబాటులో లేదు"
+  },
+  ta: {
+    nav_home:"முகப்பு", nav_market:"பயிர் சந்தை", nav_equip:"கருவிகள்", nav_logout:"வெளியேறு",
+    sb_title:"கொள்முதல் மெனு", sb_browse:"🛒 பயிர்களை உலாவுக", sb_orders:"📦 என் ஆர்டர்கள்", sb_insights:"📊 சந்தை பார்வைகள்",
+    card_market:"🛒 கிடைக்கும் பயிர்கள்", card_orders:"📦 என் ஆர்டர்கள்", card_insights:"📊 சந்தை பார்வைகள்",
+    list_empty:"இன்னும் பயிர்கள் பட்டியலிடப்படவில்லை.", buy:"வாங்கு",
+    units:"அலகுகள்", at:"@", farmer:"விவசாயி",
+    order_item:"ஆர்டர்",
+    chart_avg:"சராசரி விலை (₹)", chart_qty:"மொத்த அலகுகள்",
+    weather_loading:"வானிலை ஏற்றுகிறது...", weather_unavail:"வானிலை இல்லை"
+  }
+};
+
+function t(){ return translations[localStorage.getItem("lang") || "en"]; }
+
+function changeLanguage(){
+  const lang = document.getElementById("langSelect").value;
+  localStorage.setItem("lang", lang);
+  const L = t();
+
+  document.getElementById("nav_home").textContent = L.nav_home;
+  document.getElementById("nav_market").textContent = L.nav_market;
+  document.getElementById("nav_equip").textContent = L.nav_equip;
+  document.getElementById("nav_logout").textContent = L.nav_logout;
+
+  document.getElementById("sb_title").textContent = L.sb_title;
+  document.getElementById("sb_browse").textContent = L.sb_browse;
+  document.getElementById("sb_orders").textContent = L.sb_orders;
+  document.getElementById("sb_insights").textContent = L.sb_insights;
+  document.getElementById("card_market").textContent = L.card_market;
+  document.getElementById("card_orders").textContent = L.card_orders;
+  document.getElementById("card_insights").textContent = L.card_insights;
+
+  const wl = document.getElementById("weatherLoading");
+  if(wl) wl.textContent = L.weather_loading;
+
+  loadCrops();
+  loadOrders();
+}
+
 /* Load Crops */
 async function loadCrops(){
   const res = await fetch(API+"/crops");
   const crops = await res.json();
-  document.getElementById("cropsList").innerHTML =
+  const el = document.getElementById("cropsList");
+  const L = t();
+  if(!crops.length){ el.innerHTML = `<li><span>${L.list_empty}</span></li>`; return; }
+  el.innerHTML =
     crops.map(c=>`
       <li>
-        <span>${c.crop_name} - ${c.quantity} units @ ₹${c.price} (Farmer #${c.farmer_id})</span>
-        <button class="buy-btn" onclick="buyCrop(${c.id}, ${c.farmer_id}, ${c.price})">Buy</button>
+        <span>${c.crop_name} - ${c.quantity} ${L.units} ${L.at} ₹${c.price} (${L.farmer} #${c.farmer_id})</span>
+        <button class="buy-btn" onclick="buyCrop(${c.id}, ${c.farmer_id}, ${c.price})">${L.buy}</button>
       </li>
     `).join("");
   generateInsights(crops);
@@ -187,12 +279,15 @@ async function buyCrop(crop_id, farmer_id, price){
 async function loadOrders(){
   const res = await fetch(API+"/orders?buyer_id="+user.id);
   const orders = await res.json();
+  const L = t();
   document.getElementById("ordersList").innerHTML =
-    orders.map(o=>`<li><span>Order #${o.id}: ${o.crop_name} @ ₹${o.price}</span></li>`).join("");
+    orders.map(o=>`<li><span>${L.order_item} #${o.id}: ${o.crop_name} ${L.at} ₹${o.price}</span></li>`).join("");
 }
 
 /* Generate Market Insights */
+let chartRef = null;
 function generateInsights(crops){
+  const L = t();
   if(!crops.length) return;
   const cropStats = {};
   crops.forEach(c=>{
@@ -202,30 +297,28 @@ function generateInsights(crops){
     cropStats[c.crop_name].qty += c.quantity;
   });
   const labels = Object.keys(cropStats);
-  const avgPrices = labels.map(l=> (cropStats[l].totalPrice / cropStats[l].count).toFixed(2));
+  const avgPrices = labels.map(l=> Number((cropStats[l].totalPrice / cropStats[l].count).toFixed(2)));
   const totalQty = labels.map(l=> cropStats[l].qty);
 
   const ctx = document.getElementById("insightsChart").getContext("2d");
-  new Chart(ctx,{
+  if(chartRef) chartRef.destroy();
+  chartRef = new Chart(ctx,{
     type:"bar",
     data:{
       labels,
       datasets:[
-        { label:"Avg Price (₹)", data:avgPrices, backgroundColor:"rgba(45,106,79,0.7)" },
-        { label:"Total Units", data:totalQty, backgroundColor:"rgba(72,201,176,0.7)" }
+        { label:L.chart_avg, data:avgPrices, backgroundColor:"rgba(45,106,79,0.7)" },
+        { label:L.chart_qty, data:totalQty, backgroundColor:"rgba(72,201,176,0.7)" }
       ]
     },
-    options:{
-      responsive:true,
-      plugins:{ legend:{ position:"top" } },
-      scales:{ y:{ beginAtZero:true } }
-    }
+    options:{ responsive:true, plugins:{ legend:{ position:"top" } }, scales:{ y:{ beginAtZero:true } } }
   });
 }
 
 /* Weather */
 async function loadWeather(){
   const el = document.getElementById('weatherStrip');
+  const L = t();
   try {
     const pos = await new Promise((resolve,reject)=>{ navigator.geolocation.getCurrentPosition(resolve,reject); });
     const {latitude:lat,longitude:lon}=pos.coords;
@@ -233,13 +326,18 @@ async function loadWeather(){
     const j=await r.json(); const w=j.current_weather;
     el.innerHTML = `<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
                     <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
-  }catch(e){ el.innerHTML = `<span>Weather unavailable</span>`; }
+  }catch(e){ el.innerHTML = `<span>${L.weather_unavail}</span>`; }
 }
 
-loadCrops();
-loadOrders();
-loadWeather();
+/* Init */
+(function init(){
+  const savedLang = localStorage.getItem("lang") || "en";
+  document.getElementById("langSelect").value = savedLang;
+  changeLanguage();
+  loadCrops();
+  loadOrders();
+  loadWeather();
+})();
 </script>
 </body>
 </html>
-  

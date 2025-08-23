@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AgriMitra | Seeds</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --dark: #1b4332;
+      --light: #d8f3dc;
+      --bg: #f6fff9;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family:'Segoe UI', sans-serif;
+      background: var(--bg);
+      color:#222;
+    }
+
+    /* Weather strip */
+    .weather-strip {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      padding:8px;
+      background: #40916c;
+      color:#fff;
+      font-size:14px;
+      flex-wrap:wrap;
+    }
+    .weather-pill {
+      background: rgba(255,255,255,0.2);
+      padding:4px 10px;
+      border-radius:999px;
+      font-weight:600;
+    }
+
+    /* Navbar */
+    nav{display:flex; justify-content:space-between; align-items:center;
+        background:var(--green); color:#fff; padding:12px 20px; position:relative;}
+    .logo{font-weight:bold; font-size:20px;}
+    nav ul{list-style:none; display:flex; gap:20px; margin:0; padding:0;}
+    nav a{color:#fff; text-decoration:none; font-weight:500;}
+    nav a:hover{text-decoration:underline;}
+    .menu-toggle{display:none; font-size:26px; cursor:pointer;}
+    @media(max-width:768px){
+      nav ul{display:none; flex-direction:column; gap:14px; background:rgba(0,0,0,0.9);
+             position:absolute; top:100%; left:0; width:100%; padding:18px 0; text-align:center;}
+      nav ul.show{display:flex;}
+      .menu-toggle{display:block;}
+    }
+
+    /* Main Content */
+    .main-container { max-width:900px; margin:20px auto; padding:0 20px; }
+    h1 { color:var(--dark); margin-bottom:20px; text-align:center; }
+    .seeds-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+      gap:20px;
+    }
+    .seed-card {
+      background:#fff;
+      border-radius:10px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.1);
+      overflow:hidden;
+      transition:transform 0.2s;
+    }
+    .seed-card:hover { transform:translateY(-5px); }
+    .seed-card img { width:100%; height:150px; object-fit:cover; }
+    .seed-card-content { padding:15px; }
+    .seed-card h3 { color:var(--green); margin-bottom:8px; }
+    .seed-card .price { font-size:18px; font-weight:bold; color:var(--dark); margin-bottom:10px; }
+    .seed-card p { font-size:14px; color:#555; line-height:1.4; }
+    .btn {
+      display:block;
+      width:calc(100% - 30px);
+      margin:15px auto;
+      padding:10px;
+      background:var(--green);
+      color:#fff;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:600;
+      text-align:center;
+      transition:background 0.2s;
+    }
+    .btn:hover { background:var(--dark); }
+  </style>
+</head>
+<body>
+
+  <div class="weather-strip" id="weatherStrip">
+    <span class="small-muted">Loading weather…</span>
+  </div>
+
+  <nav>
+    <div class="logo">🌾 AgriMitra</div>
+    <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+    <ul id="navbar-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="marketplace.html">Crop Marketplace</a></li>
+      <li><a href="equipment.html">Equipment</a></li>
+      <li><a href="fertilizers.html">Fertilizers & Manures</a></li>
+      <li><a href="seeds.html">Seeds</a></li>
+      <li id="dashboard-link" style="display:none;"><a href="#">Dashboard</a></li>
+      <li id="login-link"><a href="login.html">Login/Signup</a></li>
+      <li id="logout-link" style="display:none;"><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="main-container">
+    <h1>Our Seeds Selection</h1>
+    <div class="seeds-grid">
+      <div class="seed-card">
+        <img src="https://via.placeholder.com/400x200.png?text=Hybrid+Tomato+Seeds" alt="Hybrid Tomato Seeds">
+        <div class="seed-card-content">
+          <h3>Hybrid Tomato Seeds</h3>
+          <div class="price">₹150 / packet</div>
+          <p>High-yield, disease-resistant tomato seeds. Produces firm, red tomatoes ideal for a variety of culinary uses. Suitable for all Indian climates.</p>
+          <button class="btn">Buy Now</button>
+        </div>
+      </div>
+
+      <div class="seed-card">
+        <img src="https://via.placeholder.com/400x200.png?text=Paddy+Seeds+(Rice)" alt="Paddy Seeds">
+        <div class="seed-card-content">
+          <h3>Paddy Seeds (Rice)</h3>
+          <div class="price">₹250 / kg</div>
+          <p>Premium quality rice seeds known for their long grains and aromatic properties. Recommended for cultivation in areas with ample water supply.</p>
+          <button class="btn">Buy Now</button>
+        </div>
+      </div>
+
+      <div class="seed-card">
+        <img src="https://via.placeholder.com/400x200.png?text=Organic+Onion+Seeds" alt="Organic Onion Seeds">
+        <div class="seed-card-content">
+          <h3>Organic Onion Seeds</h3>
+          <div class="price">₹120 / packet</div>
+          <p>100% organic onion seeds that produce large, uniform bulbs. These seeds are non-GMO and cultivated to be resilient against common pests.</p>
+          <button class="btn">Buy Now</button>
+        </div>
+      </div>
+      
+      <div class="seed-card">
+        <img src="https://via.placeholder.com/400x200.png?text=Corn+Seeds+(Maize)" alt="Corn Seeds">
+        <div class="seed-card-content">
+          <h3>Corn Seeds (Maize)</h3>
+          <div class="price">₹180 / packet</div>
+          <p>Fast-growing corn seeds that yield sweet and juicy cobs. Excellent for both commercial and small-scale farming. Plant in well-drained soil.</p>
+          <button class="btn">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = (window.location.protocol && window.location.protocol.startsWith('http')) ? window.location.origin : 'http://127.0.0.1:5000';
+    
+    function toggleMenu(){
+      document.getElementById("navbar-links").classList.toggle("show");
+    }
+    function updateNavbar(){
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const dash = document.getElementById("dashboard-link");
+      const login = document.getElementById("login-link");
+      const logoutBtn = document.getElementById("logout-link");
+      if(user && user.id){
+        dash.style.display="inline-block";
+        dash.querySelector("a").href = user.role==="farmer" ? "farmer.html":"buyer.html";
+        login.style.display="none"; logoutBtn.style.display="inline-block";
+      } else {
+        dash.style.display="none"; login.style.display="inline-block"; logoutBtn.style.display="none";
+      }
+    }
+    function logout(){localStorage.removeItem("user");updateNavbar();window.location="index.html";}
+    updateNavbar();
+
+    async function loadWeather(){
+      const el=document.getElementById('weatherStrip');
+      try{
+        const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej));
+        const {latitude:lat,longitude:lon}=pos.coords;
+        const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        const j=await r.json();const w=j.current_weather;
+        el.innerHTML=`<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
+                      <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
+      }catch(e){el.innerHTML="<span class='weather-pill'>⚠️ Weather unavailable</span>";}
+    }
+    loadWeather();
+  </script>
+
+</body>
+</html>

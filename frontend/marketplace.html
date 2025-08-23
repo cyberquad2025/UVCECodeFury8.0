@@ -66,32 +66,27 @@
 </head>
 <body>
 
-<!-- Navbar -->
 <nav>
   <div class="logo">🌾 AgriMitra</div>
   <span class="menu-toggle" onclick="toggleMenu()">☰</span>
   <ul id="navbar-links">
-    <!-- JS will inject menu items -->
-  </ul>
+    </ul>
 </nav>
 
-<!-- Layout -->
 <div class="container">
-  <!-- Sidebar -->
   <div class="sidebar">
-    <h3>Marketplace Menu</h3>
+    <h3 id="sidebar-title">Marketplace Menu</h3>
     <ul>
-      <li><a href="#crops">🌱 All Crops</a></li>
-      <li><a href="buyer.html#orders">📦 My Orders</a></li>
-      <li><a href="buyer.html#insights">📊 Market Insights</a></li>
+      <li><a href="#crops" id="sidebar-all-crops">🌱 All Crops</a></li>
+      <li><a href="buyer.html#orders" id="sidebar-my-orders">📦 My Orders</a></li>
+      <li><a href="buyer.html#insights" id="sidebar-insights">📊 Market Insights</a></li>
     </ul>
   </div>
 
-  <!-- Main -->
   <div class="main">
     <div class="card" id="crops">
-      <h1>Crop Marketplace</h1>
-      <p>Browse and order fresh crops directly from farmers</p>
+      <h1 id="main-title">Crop Marketplace</h1>
+      <p id="main-lead">Browse and order fresh crops directly from farmers</p>
       <div id="list" class="crops">Loading crops...</div>
     </div>
   </div>
@@ -100,6 +95,48 @@
 <script>
 const API = "http://127.0.0.1:5000";
 const user = JSON.parse(localStorage.getItem("user")||"{}");
+const translations = {
+  en: {
+    nav_home: "Home",
+    nav_dashboard: "Dashboard",
+    nav_equipment: "Equipment",
+    nav_logout: "Logout",
+    nav_login: "Login",
+    nav_register: "Register",
+    sidebar_title: "Marketplace Menu",
+    sidebar_all_crops: "🌱 All Crops",
+    sidebar_my_orders: "📦 My Orders",
+    sidebar_insights: "📊 Market Insights",
+    main_title: "Crop Marketplace",
+    main_lead: "Browse and order fresh crops directly from farmers",
+    loading_crops: "Loading crops...",
+    no_crops: "No crops listed yet.",
+    farmer: "👨‍🌾 Farmer: ",
+    place_order: "Place Order",
+    alert_login_order: "Please login to place order",
+  },
+  ta: {
+    nav_home: "முகப்பு",
+    nav_dashboard: "டாஷ்போர்டு",
+    nav_equipment: "சாதனங்கள்",
+    nav_logout: "வெளியேறு",
+    nav_login: "உள்நுழை",
+    nav_register: "பதிவு செய்",
+    sidebar_title: "சந்தைபொருள் மெனு",
+    sidebar_all_crops: "🌱 அனைத்து பயிர்கள்",
+    sidebar_my_orders: "📦 எனது ஆர்டர்கள்",
+    sidebar_insights: "📊 சந்தை நுண்ணறிவுகள்",
+    main_title: "பயிர் சந்தை",
+    main_lead: "விவசாயிகளிடமிருந்து நேரடியாக புதிய பயிர்களை உலாவவும் மற்றும் ஆர்டர் செய்யவும்",
+    loading_crops: "பயிர்கள் ஏற்றப்படுகின்றன...",
+    no_crops: "இதுவரை எந்த பயிர்களும் பட்டியலிடப்படவில்லை.",
+    farmer: "👨‍🌾 விவசாயி: ",
+    place_order: "ஆர்டர் செய்",
+    alert_login_order: "ஆர்டர் செய்ய உள்நுழையவும்",
+  }
+};
+let lang = localStorage.getItem("lang") || "en";
+const L = translations[lang];
 
 /* Navbar toggle */
 function toggleMenu(){ document.getElementById("navbar-links").classList.toggle("show"); }
@@ -112,19 +149,31 @@ function renderNavbar(){
   const nav = document.getElementById("navbar-links");
   if(user && user.id){
     nav.innerHTML = `
-      <li><a href="index.html">Home</a></li>
-      <li><a href="buyer.html">Dashboard</a></li>
-      <li><a href="equipment.html">Equipment</a></li>
-      <li><a href="#" onclick="logout()">Logout</a></li>
+      <li><a href="index.html">${L.nav_home}</a></li>
+      <li><a href="buyer.html">${L.nav_dashboard}</a></li>
+      <li><a href="equipment.html">${L.nav_equipment}</a></li>
+      <li><a href="#" onclick="logout()">${L.nav_logout}</a></li>
     `;
   } else {
     nav.innerHTML = `
-      <li><a href="index.html">Home</a></li>
-      <li><a href="login.html">Login</a></li>
-      <li><a href="register.html">Register</a></li>
-      <li><a href="equipment.html">Equipment</a></li>
+      <li><a href="index.html">${L.nav_home}</a></li>
+      <li><a href="login.html">${L.nav_login}</a></li>
+      <li><a href="register.html">${L.nav_register}</a></li>
+      <li><a href="equipment.html">${L.nav_equipment}</a></li>
     `;
   }
+}
+
+/* Apply translations to static text */
+function applyTranslations(){
+  document.title = L.main_title;
+  document.getElementById("sidebar-title").textContent = L.sidebar_title;
+  document.getElementById("sidebar-all-crops").textContent = L.sidebar_all_crops;
+  document.getElementById("sidebar-my-orders").textContent = L.sidebar_my_orders;
+  document.getElementById("sidebar-insights").textContent = L.sidebar_insights;
+  document.getElementById("main-title").textContent = L.main_title;
+  document.getElementById("main-lead").textContent = L.main_lead;
+  document.getElementById("list").textContent = L.loading_crops;
 }
 
 /* Load crops */
@@ -133,7 +182,7 @@ async function load(){
   const data = await res.json();
   const el = document.getElementById("list");
   if(!data || !data.length){
-    el.innerHTML = "<p>No crops listed yet.</p>";
+    el.innerHTML = `<p>${L.no_crops}</p>`;
     return;
   }
   el.innerHTML = data.map(c=>`
@@ -141,9 +190,9 @@ async function load(){
       <div>
         <h3>${c.crop_name}</h3>
         <div class="price">${c.quantity} units @ ₹${c.price}</div>
-        <small>👨‍🌾 Farmer: ${c.farmer_name || "Unknown"}</small>
+        <small>${L.farmer}${c.farmer_name || "Unknown"}</small>
       </div>
-      <button class="btn" onclick="order(${c.id})">Place Order</button>
+      <button class="btn" onclick="order(${c.id})">${L.place_order}</button>
     </div>
   `).join("");
 }
@@ -151,7 +200,7 @@ async function load(){
 /* Place order */
 async function order(cropId){
   if(!user.id){
-    alert("Please login to place order");
+    alert(L.alert_login_order);
     window.location="login.html";
     return;
   }
@@ -165,6 +214,7 @@ async function order(cropId){
 }
 
 /* Init */
+applyTranslations();
 renderNavbar();
 load();
 </script>
