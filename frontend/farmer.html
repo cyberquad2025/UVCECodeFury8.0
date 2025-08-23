@@ -11,64 +11,31 @@
   --light: #d8f3dc;
   --bg: #f6fff9;
 }
+
+/* Reset */
 * { box-sizing: border-box; margin:0; padding:0; }
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: var(--bg);
-  color: #222;
-}
+body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #222; }
 
 /* Weather Strip */
-.weather-strip {
-  display:flex;
-  gap:12px;
-  align-items:center;
-  justify-content:center;
-  padding:8px;
-  background: #40916c;
-  color:#fff;
-  font-size: 14px;
-  flex-wrap:wrap;
-}
-.weather-pill {
-  background: rgba(255,255,255,0.2);
-  padding:4px 10px;
-  border-radius: 999px;
-  font-weight:600;
-}
+.weather-strip { display:flex; gap:12px; align-items:center; justify-content:center; padding:8px; background:#40916c; color:#fff; font-size:14px; flex-wrap:wrap; }
+.weather-pill { background: rgba(255,255,255,0.2); padding:4px 10px; border-radius:999px; font-weight:600; }
 
 /* Navbar */
-nav {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background: var(--green);
-  color:#fff;
-  padding:12px 20px;
-  position:relative;
-}
+nav { display:flex; justify-content:space-between; align-items:center; background: var(--green); color:#fff; padding:12px 20px; position:relative; }
 .logo { font-size:20px; font-weight:bold; }
 nav ul { list-style:none; display:flex; gap:20px; margin:0; padding:0; }
 nav a { color:#fff; text-decoration:none; font-weight:500; }
 nav a:hover { text-decoration:underline; }
 .menu-toggle { display:none; font-size:26px; cursor:pointer; }
 @media(max-width:768px){
-  nav ul { display:none; flex-direction:column; gap:14px; background:rgba(0,0,0,0.9);
-           position:absolute; top:100%; left:0; width:100%; padding:18px 0; text-align:center; }
+  nav ul { display:none; flex-direction:column; gap:14px; background:rgba(0,0,0,0.9); position:absolute; top:100%; left:0; width:100%; padding:18px 0; text-align:center; }
   nav ul.show { display:flex; }
   .menu-toggle { display:block; }
 }
 
 /* Layout */
 .container { display:flex; padding:20px; gap:20px; max-width:1200px; margin:auto; }
-.sidebar {
-  flex:0 0 220px;
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.08);
-  height:fit-content;
-}
+.sidebar { flex:0 0 220px; background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.08); height:fit-content; }
 .sidebar h3 { margin-top:0; color: var(--green); font-size:18px; margin-bottom:10px; }
 .sidebar ul { list-style:none; padding:0; margin:0; }
 .sidebar li { margin:10px 0; }
@@ -78,44 +45,72 @@ nav a:hover { text-decoration:underline; }
 .main { flex:1; display:flex; flex-direction:column; gap:20px; }
 
 /* Cards */
-.card {
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.08);
-}
+.card { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.08); transition: 0.3s; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
 .card h2 { margin-top:0; color: var(--green); margin-bottom:15px; }
 
-input, button {
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border:1px solid #ccc;
-  border-radius:8px;
-  font-size:14px;
-}
-input:focus { border-color: var(--green); outline:none; box-shadow:0 0 5px rgba(64,145,108,0.3); }
-button {
-  background: var(--green);
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-  border:none;
-  transition:0.3s;
-}
-button:hover { background: var(--dark); }
+/* Modernized Crop Form */
+#addCrop { background: linear-gradient(145deg, #d8f3dc, #f6fff9); padding: 30px 25px; border-radius: 20px; }
+#cropForm { display: flex; flex-direction: column; gap: 18px; }
 
-ul.crops { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; }
-ul.crops li {
-  padding:12px;
-  border:1px solid #eee;
-  border-radius:8px;
-  background:#f8fdf7;
-  display:flex;
-  justify-content:space-between;
-  flex-wrap:wrap;
+.crop-field { position: relative; }
+.crop-field input {
+  width: 100%;
+  border-radius: 12px;
+  padding: 14px 16px;
+  border: 1px solid #b7d7c4;
+  outline: none;
+  background: #fff;
+  font-size: 15px;
+  transition: 0.3s;
 }
+.crop-field input:focus { border-color: #40916c; box-shadow: 0 4px 12px rgba(64,145,108,0.25); }
+
+.crop-field label {
+  position: absolute;
+  top: 50%;
+  left: 18px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 14px;
+  pointer-events: none;
+  transition: 0.3s;
+}
+.crop-field input:focus + label,
+.crop-field input:not(:placeholder-shown) + label {
+  top: -8px;
+  font-size: 12px;
+  color: #2d6a4f;
+  background: #d8f3dc;
+  padding: 0 6px;
+  border-radius: 4px;
+}
+
+/* File input styling */
+.crop-field input[type="file"] { padding: 8px; }
+
+/* Button */
+#add-btn {
+  background: linear-gradient(135deg, #2d6a4f, #40916c);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+#add-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 6px 15px rgba(64,145,108,0.4); }
+
+/* Crop list */
+ul.crops { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; }
+ul.crops li { padding:12px; border:1px solid #eee; border-radius:8px; background:#f8fdf7; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+ul.crops li img { height:50px; width:50px; object-fit:cover; border-radius:6px; }
 ul.crops span { font-weight:500; }
+
+/* Image preview */
+#cropPreview { max-width:100%; max-height:150px; border-radius:12px; margin-top:10px; display:none; object-fit:cover; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
 /* Language select */
 #langSelect { padding:6px; border-radius:6px; font-weight:600; margin-left:10px; }
@@ -146,7 +141,6 @@ ul.crops span { font-weight:500; }
 
 <!-- Layout -->
 <div class="container">
-  <!-- Sidebar -->
   <div class="sidebar">
     <h3 id="menu-title">Farmer Menu</h3>
     <ul>
@@ -156,14 +150,27 @@ ul.crops span { font-weight:500; }
     </ul>
   </div>
 
-  <!-- Main content -->
   <div class="main">
     <div class="card" id="addCrop">
       <h2 id="add-title">➕ Add New Crop</h2>
       <form id="cropForm">
-        <input type="text" id="cropName" placeholder="Crop Name" required>
-        <input type="number" id="quantity" placeholder="Quantity" required>
-        <input type="number" id="price" placeholder="Price per unit (₹)" required>
+        <div class="crop-field">
+          <input type="text" id="cropName" placeholder=" " required>
+          <label for="cropName">Crop Name</label>
+        </div>
+        <div class="crop-field">
+          <input type="number" id="quantity" placeholder=" " required>
+          <label for="quantity">Quantity</label>
+        </div>
+        <div class="crop-field">
+          <input type="number" id="price" placeholder=" " required>
+          <label for="price">Price per Unit (₹)</label>
+        </div>
+        <div class="crop-field">
+          <input type="file" id="cropImage" accept="image/*">
+          <label for="cropImage">Upload Image</label>
+          <img id="cropPreview" alt="Preview">
+        </div>
         <button type="submit" id="add-btn">Add Crop</button>
       </form>
     </div>
@@ -185,18 +192,15 @@ const API = "http://127.0.0.1:5000";
 let user = JSON.parse(localStorage.getItem("user") || "{}");
 if(!user.id || user.role!=="farmer") window.location="index.html";
 
-/* Language support */
 const translations = {
-  en: { nav_home:"Home", nav_market:"Crop Marketplace", nav_equipment:"Equipment", nav_logout:"Logout", menu:"Farmer Menu", add_title:"➕ Add New Crop", add_btn:"Add Crop", my_title:"🌱 My Crops", insights_title:"📊 Market Insights", insights_text:"Coming soon: price comparison graphs, demand forecasts and more." },
-  hi: { nav_home:"होम", nav_market:"फसल मार्केट", nav_equipment:"उपकरण", nav_logout:"लॉगआउट", menu:"किसान मेन्यू", add_title:"➕ नई फसल जोड़ें", add_btn:"जोड़ें", my_title:"🌱 मेरी फसलें", insights_title:"📊 मार्केट इनसाइट्स", insights_text:"जल्द आ रहा है: कीमत तुलना ग्राफ़, मांग पूर्वानुमान और अधिक।" },
-  ta: { nav_home:"முகப்பு", nav_market:"பயிர் சந்தை", nav_equipment:"சாதனங்கள்", nav_logout:"வெளியேறு", menu:"விவசாயி மெனு", add_title:"➕ புதிய பயிர் சேர்க்கவும்", add_btn:"சேர்க்கவும்", my_title:"🌱 என் பயிர்கள்", insights_title:"📊 சந்தை அறிவுரைகள்", insights_text:"விரைவில்: விலை ஒப்பீடு வரைபடங்கள், தேவைக் கணிப்புகள் மற்றும் மேலும்." },
-  te: { nav_home:"హోమ్", nav_market:"పంట మార్కెట్", nav_equipment:"పరికరాలు", nav_logout:"లాగ్ అవుట్", menu:"రైతు మెనూ", add_title:"➕ కొత్త పంట చేర్చు", add_btn:"చేర్చు", my_title:"🌱 నా పంటలు", insights_title:"📊 మార్కెట్ సమాచారాలు", insights_text:"చిన్న కాలంలో: ధరల సరిపోలిక గ్రాఫ్‌లు, డిమాండ్ అంచనాలు మరియు మరిన్ని." },
-  kn: { nav_home:"ಹೋಮ್", nav_market:"ಹಣಿಕೊಡು ಮಾರುಕಟ್ಟೆ", nav_equipment:"ಉಪಕರಣ", nav_logout:"ಲಾಗ್ ಔಟ್", menu:"ರೈತ ಮೆನು", add_title:"➕ ಹೊಸ ಬೆಳೆ ಸೇರಿಸಿ", add_btn:"ಸೇರಿಸಿ", my_title:"🌱 ನನ್ನ ಬೆಳೆಗಳು", insights_title:"📊 ಮಾರುಕಟ್ಟೆ ಮಾಹಿತಿ", insights_text:"ಬಗ್ಗೆ ಬರುತ್ತಿದೆ: ಬೆಲೆ ಹೋಲಿಕೆ ಗ್ರಾಫ್‌ಗಳು, ಬೇಡಿಕೆಯ ಅಂದಾಜು ಮತ್ತು ಇನ್ನಷ್ಟು." }
+  en:{menu:"Farmer Menu", add_title:"➕ Add New Crop", add_btn:"Add Crop", my_title:"🌱 My Crops", insights_title:"📊 Market Insights", insights_text:"Coming soon: price comparison graphs, demand forecasts and more."},
+  hi:{menu:"किसान मेन्यू", add_title:"➕ नई फसल जोड़ें", add_btn:"जोड़ें", my_title:"🌱 मेरी फसलें", insights_title:"📊 मार्केट इनसाइट्स", insights_text:"जल्द आ रहा है: कीमत तुलना ग्राफ़, मांग पूर्वानुमान और अधिक।"},
+  ta:{menu:"விவசாயி மெனு", add_title:"➕ புதிய பயிர் சேர்க்கவும்", add_btn:"சேர்க்கவும்", my_title:"🌱 என் பயிர்கள்", insights_title:"📊 சந்தை அறிவுரைகள்", insights_text:"விரைவில்: விலை ஒப்பீடு வரைபடங்கள், தேவைக் கணிப்புகள் மற்றும் மேலும்."},
+  te:{menu:"రైతు మెనూ", add_title:"➕ కొత్త పంట చేర్చు", add_btn:"చేర్చు", my_title:"🌱 నా పంటలు", insights_title:"📊 మార్కెట్ సమాచారాలు", insights_text:"చిన్న కాలంలో: ధరల సరిపోలిక గ్రాఫ్‌లు, డిమాండ్ అంచనాలు మరియు మరిన్ని."},
+  kn:{menu:"ರೈತ ಮೆನು", add_title:"➕ ಹೊಸ ಬೆಳೆ ಸೇರಿಸಿ", add_btn:"ಸೇರಿಸಿ", my_title:"🌱 ನನ್ನ ಬೆಳೆಗಳು", insights_title:"📊 ಮಾರುಕಟ್ಟೆ ಮಾಹಿತಿ", insights_text:"ಬಗ್ಗೆ ಬರುತ್ತಿದೆ: ಬೆಲೆ ಹೋಲಿಕೆ ಗ್ರಾಫ್‌ಗಳು, ಬೇಡಿಕೆಯ ಅಂದಾಜು ಮತ್ತು ಇನ್ನಷ್ಟು."}
 };
 let lang = localStorage.getItem("lang") || "en";
-let L = translations[lang];
 
-/* Apply language */
 function applyTranslations(){
   L = translations[localStorage.getItem("lang")||"en"];
   document.getElementById("langSelect").value = lang;
@@ -209,69 +213,67 @@ function applyTranslations(){
   renderNavbar();
 }
 
-/* Change language */
-function changeLanguage(){
-  lang = document.getElementById("langSelect").value;
-  localStorage.setItem("lang", lang);
-  applyTranslations();
-}
-
-/* Navbar rendering */
-function renderNavbar(){
-  const nav = document.getElementById("navbar-links");
-  nav.innerHTML = `<li><a href="index.html">${L.nav_home}</a></li>
-                   <li><a href="marketplace.html">${L.nav_market}</a></li>
-                   <li><a href="equipment.html">${L.nav_equipment}</a></li>
-                   <li><a href="#" onclick="logout()">${L.nav_logout}</a></li>`;
-}
-
-/* Navbar toggle */
+function changeLanguage(){ lang=document.getElementById("langSelect").value; localStorage.setItem("lang", lang); applyTranslations(); }
 function toggleMenu(){ document.getElementById("navbar-links").classList.toggle("show"); }
-
-/* Logout */
+function renderNavbar(){ 
+  const nav = document.getElementById("navbar-links");
+  nav.innerHTML = `<li><a href="index.html">Home</a></li><li><a href="marketplace.html">Marketplace</a></li><li><a href="equipment.html">Equipment</a></li><li><a href="#" onclick="logout()">Logout</a></li>`;
+}
 function logout(){ localStorage.removeItem("user"); window.location="index.html"; }
 
-/* Add Crop */
+// Crop form submit
 document.getElementById("cropForm").addEventListener("submit", async e=>{
   e.preventDefault();
-  const res = await fetch(API+"/crops", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      farmer_id: user.id,
-      crop_name: document.getElementById("cropName").value,
-      quantity: +document.getElementById("quantity").value,
-      price: +document.getElementById("price").value
-    })
-  });
+  const formData = new FormData();
+  formData.append("farmer_id", user.id);
+  formData.append("crop_name", document.getElementById("cropName").value);
+  formData.append("quantity", +document.getElementById("quantity").value);
+  formData.append("price", +document.getElementById("price").value);
+  const imgFile = document.getElementById("cropImage").files[0];
+  if(imgFile) formData.append("image_url", imgFile.name); // send filename to backend
+  const res = await fetch(API+"/crops", {method:"POST", body: formData});
   const data = await res.json();
-  alert(data.message || data.error);
+  alert(data.message||data.error);
   document.getElementById("cropForm").reset();
+  cropPreview.style.display="none";
   loadCrops();
 });
 
-/* Load crops */
+// Load crops
 async function loadCrops(){
   const res = await fetch(API+"/crops?farmer_id="+user.id);
   const crops = await res.json();
-  document.getElementById("cropsList").innerHTML = crops.map(c=>`<li><span>${c.crop_name} - ${c.quantity} units @ ₹${c.price}</span></li>`).join("");
+  document.getElementById("cropsList").innerHTML = crops.map(c=>`
+    <li>
+      ${c.image_url?`<img src="${API}/${c.image_url}">`:''}
+      <span>${c.crop_name} - ${c.quantity} units @ ₹${c.price}</span>
+    </li>`).join("");
 }
 
-/* Weather */
+// Image preview
+const cropImageInput = document.getElementById('cropImage');
+const cropPreview = document.getElementById('cropPreview');
+cropImageInput.addEventListener('change', () => {
+  const file = cropImageInput.files[0];
+  if(file){
+    cropPreview.src = URL.createObjectURL(file);
+    cropPreview.style.display = "block";
+  } else { cropPreview.style.display = "none"; }
+});
+
+// Weather
 async function loadWeather(){
   const el = document.getElementById('weatherStrip');
   try{
     const pos = await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej));
     const {latitude:lat,longitude:lon} = pos.coords;
     const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-    const j = await r.json();
-    const w = j.current_weather;
+    const j = await r.json(); const w = j.current_weather;
     el.innerHTML = `<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
                     <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
   }catch(e){ el.innerHTML = "<span>Weather unavailable</span>"; }
 }
 
-/* Init */
 applyTranslations();
 loadCrops();
 loadWeather();

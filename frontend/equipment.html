@@ -71,104 +71,154 @@ p.lead{color:#555;margin-bottom:20px;}
   <div class="grid" id="list">Loading equipment...</div>
 </div>
 
+<!-- Booking Modal -->
+<div id="bookingModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:1000;">
+  <div style="background:#fff;color:#222;padding:20px;border-radius:12px;max-width:400px;width:90%;position:relative;">
+    <span style="position:absolute;top:10px;right:14px;cursor:pointer;font-weight:bold;" onclick="closeModal()">×</span>
+    <h2 id="modalTitle">Book Equipment</h2>
+    <p id="modalFarmer"></p>
+    <p id="modalPrice"></p>
+    <form id="bookingForm">
+      <label>Start Date:</label><br>
+      <input type="date" id="startDate" required style="width:100%;padding:8px;margin-bottom:12px;border-radius:6px;border:1px solid #ccc;"><br>
+      <label>End Date:</label><br>
+      <input type="date" id="endDate" required style="width:100%;padding:8px;margin-bottom:12px;border-radius:6px;border:1px solid #ccc;"><br>
+      <button type="submit" style="background:var(--green);color:#fff;padding:10px;border:none;border-radius:8px;width:100%;cursor:pointer;">Confirm Booking</button>
+    </form>
+  </div>
+</div>
+
 <script>
-const translations = {
-  en: { nav_home:"Home", nav_market:"Crop Marketplace", nav_fertilizers:"Fertilizers & Manures", nav_equipment:"Equipment", nav_dashboard:"Dashboard", nav_logout:"Logout", nav_login:"Login/Signup", main_title:"⚙️ Equipment Marketplace", main_lead:"Browse and rent farming equipment from nearby farmers", loading_eq:"Loading equipment...", book:"Book Now", alert_login:"Please login to book" },
-  hi: { nav_home:"होम", nav_market:"फसल बाज़ार", nav_fertilizers:"उर्वरक और खाद", nav_equipment:"उपकरण", nav_dashboard:"डैशबोर्ड", nav_logout:"लॉगआउट", nav_login:"लॉगिन/साइनअप", main_title:"⚙️ उपकरण मार्केटप्लेस", main_lead:"पास के किसानों से कृषि उपकरण ब्राउज़ और किराए पर लें", loading_eq:"उपकरण लोड हो रहे हैं...", book:"बुक करें", alert_login:"बुक करने के लिए लॉगिन करें" },
-  ta: { nav_home:"முகப்பு", nav_market:"பயிர் சந்தை", nav_fertilizers:"உரங்கள் மற்றும் உரங்கள்", nav_equipment:"சாதனங்கள்", nav_dashboard:"டாஷ்போர்ட்", nav_logout:"வெளியேறு", nav_login:"உள்நுழை/பதிவு செய்", main_title:"⚙️ சாதனங்கள் சந்தை", main_lead:"நெருங்கிய விவசாயிகளிடமிருந்து உபகரணங்களை உலாவவும் மற்றும் வாடகைக்கு எடுக்கவும்", loading_eq:"சாதனங்கள் ஏற்றப்படுகிறது...", book:"வாடகை எடு", alert_login:"வாடகைக்கு உள்நுழையவும்" },
-  te: { nav_home:"హోమ్", nav_market:"పంటల మార్కెట్‌ప్లేస్", nav_fertilizers:"ఎరువులు & సేంద్రీయ ఎరువులు", nav_equipment:"పరికరాలు", nav_dashboard:"డాష్‌బోర్డ్", nav_logout:"లాగ్ అవుట్", nav_login:"లాగిన్/సైన్-అప్", main_title:"⚙️ పరికరాల మార్కెట్", main_lead:"సమీప రైతుల నుండి పరికరాలను బ్రౌజ్ చేసి అద్దెకు తీసుకోండి", loading_eq:"పరికరాలు లోడ్ అవుతున్నాయి...", book:"బుక్ చేయండి", alert_login:"బుక్ చేయడానికి లాగిన్ చేయండి" },
-  kn: { nav_home:"ಹೋಮ್", nav_market:"ಬೆಳೆ ಮಾರುಕಟ್ಟೆ", nav_fertilizers:"ಗೊಬ್ಬರ ಮತ್ತು ರಸಗೊಬ್ಬರಗಳು", nav_equipment:"ಉಪಕರಣ", nav_dashboard:"ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", nav_logout:"ಲಾಗ್ ಔಟ್", nav_login:"ಲಾಗಿನ್/ಸೈನ್-ಅಪ್", main_title:"⚙️ ಉಪಕರಣ ಮಾರುಕಟ್ಟೆ", main_lead:"ಹತ್ತಿರದ ರೈತರಿಂದ ಕೃಷಿ ಉಪಕರಣಗಳನ್ನು ಬ್ರೌಸ್ ಮಾಡಿ ಮತ್ತು ಬಾಡಿಗೆಗೆ ಪಡೆಯಿರಿ", loading_eq:"ಉಪಕರಣ ಲೋಡ್ ಆಗುತ್ತಿದೆ...", book:"ಬುಕ್ ಮಾಡಿ", alert_login:"ಬುಕ್ ಮಾಡಲು ಲಾಗಿನ್ ಮಾಡಿ" }
-};
+window.onload = function() {
 
-let lang = localStorage.getItem("lang") || "en";
-let L = translations[lang];
-let user = JSON.parse(localStorage.getItem("user")||"{}");
+  const translations = {
+    en: { nav_home:"Home", nav_market:"Crop Marketplace", nav_fertilizers:"Fertilizers & Manures", nav_equipment:"Equipment", nav_dashboard:"Dashboard", nav_logout:"Logout", nav_login:"Login/Signup", main_title:"⚙️ Equipment Marketplace", main_lead:"Browse and rent farming equipment from nearby farmers", loading_eq:"Loading equipment...", book:"Book Now", alert_login:"Please login to book" },
+    hi: { nav_home:"होम", nav_market:"फसल बाज़ार", nav_fertilizers:"उर्वरक और खाद", nav_equipment:"उपकरण", nav_dashboard:"डैशबोर्ड", nav_logout:"लॉगआउट", nav_login:"लॉगिन/साइनअप", main_title:"⚙️ उपकरण मार्केटप्लेस", main_lead:"पास के किसानों से कृषि उपकरण ब्राउज़ और किराए पर लें", loading_eq:"उपकरण लोड हो रहे हैं...", book:"बुक करें", alert_login:"बुक करने के लिए लॉगिन करें" },
+    ta: { nav_home:"முகப்பு", nav_market:"பயிர் சந்தை", nav_fertilizers:"உரங்கள் மற்றும் உரங்கள்", nav_equipment:"சாதனங்கள்", nav_dashboard:"டாஷ்போர்ட்", nav_logout:"வெளியேறு", nav_login:"உள்நுழை/பதிவு செய்", main_title:"⚙️ சாதனங்கள் சந்தை", main_lead:"நெருங்கிய விவசாயிகளிடமிருந்து உபகரணங்களை உலாவவும் மற்றும் வாடகைக்கு எடுக்கவும்", loading_eq:"சாதனங்கள் ஏற்றப்படுகிறது...", book:"வாடகை எடு", alert_login:"வாடகைக்கு உள்நுழையவும்" },
+    te: { nav_home:"హోమ్", nav_market:"పంటల మార్కెట్‌ప్లేస్", nav_fertilizers:"ఎరువులు & సేంద్రీయ ఎరువులు", nav_equipment:"పరికరాలు", nav_dashboard:"డాష్‌బోర్డ్", nav_logout:"లాగ్ అవుట్", nav_login:"లాగిన్/సైన్-అప్", main_title:"⚙️ పరికరాల మార్కెట్", main_lead:"సమీప రైతుల నుండి పరికరాలను బ్రౌజ్ చేసి అద్దెకు తీసుకోండి", loading_eq:"పరికరాలు లోడ్ అవుతున్నాయి...", book:"బుక్ చేయండి", alert_login:"బుక్ చేయడానికి లాగిన్ చేయండి" },
+    kn: { nav_home:"ಹೋಮ್", nav_market:"ಬೆಳೆ ಮಾರುಕಟ್ಟೆ", nav_fertilizers:"ಗೊಬ್ಬರ ಮತ್ತು ರಸಗೊಬ್ಬರಗಳು", nav_equipment:"ಉಪಕರಣ", nav_dashboard:"ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", nav_logout:"ಲಾಗ್ ಔಟ್", nav_login:"ಲಾಗಿನ್/ಸೈನ್-ಅಪ್", main_title:"⚙️ ಉಪಕರಣ ಮಾರುಕಟ್ಟೆ", main_lead:"ಹತ್ತಿರದ ರೈತರಿಂದ ಕೃಷಿ ಉಪಕರಣಗಳನ್ನು ಬ್ರೌಸ್ ಮಾಡಿ ಮತ್ತು ಬಾಡಿಗೆಗೆ ಪಡೆಯಿರಿ", loading_eq:"ಉಪಕರಣ ಲೋಡ್ ಆಗುತ್ತಿದೆ...", book:"ಬುಕ್ ಮಾಡಿ", alert_login:"ಬುಕ್ ಮಾಡಲು ಲಾಗಿನ್ ಮಾಡಿ" }
+  };
 
-function toggleMenu(){ document.getElementById("navbar-links").classList.toggle("show"); }
-function logout(){ localStorage.removeItem("user"); renderNavbar(); window.location="index.html"; }
+  let lang = localStorage.getItem("lang") || "en";
+  let L = translations[lang];
+  let user = JSON.parse(localStorage.getItem("user")||"{}");
 
-function renderNavbar(){
-  L = translations[localStorage.getItem("lang")||"en"];
-  user = JSON.parse(localStorage.getItem("user")||"{}");
-  const nav = document.getElementById("navbar-links");
-  nav.innerHTML = `
-    <li><a href="index.html">${L.nav_home}</a></li>
-    <li><a href="marketplace.html">${L.nav_market}</a></li>
-    <li><a href="fertilizers.html">${L.nav_fertilizers}</a></li>
-    <li><a href="equipment.html">${L.nav_equipment}</a></li>
-    ${user && user.id ? `<li><a href="${user.role==="farmer"?"farmer.html":"buyer.html"}">${L.nav_dashboard}</a></li>
-                         <li><a href="#" onclick="logout()">${L.nav_logout}</a></li>` : `<li><a href="login.html">${L.nav_login}</a></li>`}
-  `;
-}
+  function toggleMenu(){ document.getElementById("navbar-links").classList.toggle("show"); }
+  function logout(){ localStorage.removeItem("user"); renderNavbar(); window.location="index.html"; }
 
-function applyTranslations(){
-  L = translations[localStorage.getItem("lang")||"en"];
-  document.getElementById("main-title").textContent = L.main_title;
-  document.getElementById("main-lead").textContent = L.main_lead;
-  document.getElementById("langSelect").value = localStorage.getItem("lang")||"en";
-}
+  function renderNavbar(){
+    L = translations[localStorage.getItem("lang")||"en"];
+    user = JSON.parse(localStorage.getItem("user")||"{}");
+    const nav = document.getElementById("navbar-links");
+    nav.innerHTML = `
+      <li><a href="index.html">${L.nav_home}</a></li>
+      <li><a href="marketplace.html">${L.nav_market}</a></li>
+      <li><a href="fertilizers.html">${L.nav_fertilizers}</a></li>
+      <li><a href="equipment.html">${L.nav_equipment}</a></li>
+      ${user && user.id ? `<li><a href="${user.role==="farmer"?"farmer.html":"buyer.html"}">${L.nav_dashboard}</a></li>
+                           <li><a href="#" onclick="logout()">${L.nav_logout}</a></li>` : `<li><a href="login.html">${L.nav_login}</a></li>`}
+    `;
+  }
 
-function changeLanguage(){
-  const sel = document.getElementById("langSelect").value;
-  localStorage.setItem("lang", sel);
+  function applyTranslations(){
+    L = translations[localStorage.getItem("lang")||"en"];
+    document.getElementById("main-title").textContent = L.main_title;
+    document.getElementById("main-lead").textContent = L.main_lead;
+    document.getElementById("langSelect").value = localStorage.getItem("lang")||"en";
+  }
+
+  function changeLanguage(){
+    const sel = document.getElementById("langSelect").value;
+    localStorage.setItem("lang", sel);
+    applyTranslations();
+    renderNavbar();
+    load();
+  }
+
+  /* Load Equipment */
+  const sample = [
+      {id:1,name:"Tractor",farmer_name:"Ravi Kumar",rent_price:2000,img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1DzqFJ-uX4N9Hm1AO-o88YUgG40sl6WPJTg&s"},
+      {id:2,name:"Rotavator",farmer_name:"Sita Devi",rent_price:1200,img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN5LCkdhmbRlrtQmIHBxj945EQM3UaL4VHng&s"},
+      {id:3,name:"Seeder",farmer_name:"Mohan",rent_price:800,img:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/National_Agro_Happy_Seeder.jpg/1200px-National_Agro_Happy_Seeder.jpg"},
+      {id:4,name:"Sprayer",farmer_name:"Anil",rent_price:400,img:"https://pre-live-admin.balwaan.com/uploads/media/2024/manual-sprayer-for-garden-20-liter-1.jpg"},
+      {id:5,name:"Harvester",farmer_name:"Lakshmi",rent_price:2500,img:"https://www.mechanicalpower.net/wp-content/uploads/2023/05/Combine-Harvester.jpg"}
+    ];
+
+  function load(){
+    const el = document.getElementById("list");
+    el.textContent = L.loading_eq;
+    el.innerHTML = sample.map(e=>`
+      <div class="card">
+        <img src="${e.img}" alt="${e.name}">
+        <h3>${e.name}</h3>
+        <div class="meta">By: ${e.farmer_name}</div>
+        <div class="price">₹${e.rent_price}/day</div>
+        <button onclick="book(${e.id})">${L.book}</button>
+      </div>
+    `).join("");
+  }
+
+  /* Book equipment */
+  let selectedEquipment = null;
+
+  function book(id){
+    user = JSON.parse(localStorage.getItem("user")||"{}");
+    if(!user.id){
+      alert(L.alert_login);
+      window.location="login.html";
+      return;
+    }
+    selectedEquipment = sample.find(e => e.id === id);
+    if(!selectedEquipment) return;
+
+    document.getElementById("modalTitle").textContent = `Book: ${selectedEquipment.name}`;
+    document.getElementById("modalFarmer").textContent = `Farmer: ${selectedEquipment.farmer_name}`;
+    document.getElementById("modalPrice").textContent = `Price: ₹${selectedEquipment.rent_price}/day`;
+    document.getElementById("bookingModal").style.display = "flex";
+  }
+
+  function closeModal(){
+    document.getElementById("bookingModal").style.display = "none";
+    document.getElementById("bookingForm").reset();
+  }
+
+  document.getElementById("bookingForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const start = document.getElementById("startDate").value;
+    const end = document.getElementById("endDate").value;
+    if(!start || !end) return;
+    alert(`✅ ${selectedEquipment.name} booked from ${start} to ${end} at ₹${selectedEquipment.rent_price}/day`);
+    closeModal();
+  });
+
+  /* Weather */
+  async function loadWeather(){
+    const el = document.getElementById('weatherStrip');
+    try{
+      const pos = await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej));
+      const {latitude:lat,longitude:lon} = pos.coords;
+      const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+      const j = await r.json();
+      const w = j.current_weather;
+      el.innerHTML = `<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
+                      <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
+    }catch(e){ el.innerHTML="<span class='weather-pill'>⚠️ Weather unavailable</span>"; }
+  }
+
+  /* Init */
   applyTranslations();
   renderNavbar();
   load();
+  loadWeather();
+
+  // Expose to global for buttons in HTML
+  window.toggleMenu = toggleMenu;
+  window.changeLanguage = changeLanguage;
+  window.book = book;
+  window.closeModal = closeModal;
+
 }
-
-/* Load Equipment */
-function load(){
-  const el = document.getElementById("list");
-  el.textContent = L.loading_eq;
-
-  const sample = [
-    {id:1,name:"Tractor",farmer_name:"Ravi Kumar",rent_price:2000,img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1DzqFJ-uX4N9Hm1AO-o88YUgG40sl6WPJTg&s"},
-    {id:2,name:"Rotavator",farmer_name:"Sita Devi",rent_price:1200,img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN5LCkdhmbRlrtQmIHBxj945EQM3UaL4VHng&s"},
-    {id:3,name:"Seeder",farmer_name:"Mohan",rent_price:800,img:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/National_Agro_Happy_Seeder.jpg/1200px-National_Agro_Happy_Seeder.jpg"},
-    {id:4,name:"Sprayer",farmer_name:"Anil",rent_price:400,img:"https://pre-live-admin.balwaan.com/uploads/media/2024/manual-sprayer-for-garden-20-liter-1.jpg"},
-    {id:5,name:"Harvester",farmer_name:"Lakshmi",rent_price:2500,img:"https://www.mechanicalpower.net/wp-content/uploads/2023/05/Combine-Harvester.jpg"}
-  ];
-
-  el.innerHTML = sample.map(e=>`
-    <div class="card">
-      <img src="${e.img}" alt="${e.name}">
-      <h3>${e.name}</h3>
-      <div class="meta">By: ${e.farmer_name}</div>
-      <div class="price">₹${e.rent_price}/day</div>
-      <button onclick="book(${e.id})">${L.book}</button>
-    </div>
-  `).join("");
-}
-
-/* Book equipment */
-function book(id){
-  user = JSON.parse(localStorage.getItem("user")||"{}");
-  if(!user.id){ alert(L.alert_login); window.location="login.html"; return; }
-  const start = prompt("Start date (YYYY-MM-DD)");
-  const end = prompt("End date (YYYY-MM-DD)");
-  if(!start||!end) return;
-  alert(`Equipment booked from ${start} to ${end}`);
-}
-
-/* Weather */
-async function loadWeather(){
-  const el = document.getElementById('weatherStrip');
-  try{
-    const pos = await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej));
-    const {latitude:lat,longitude:lon} = pos.coords;
-    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-    const j = await r.json();
-    const w = j.current_weather;
-    el.innerHTML = `<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
-                    <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
-  }catch(e){ el.innerHTML="<span class='weather-pill'>⚠️ Weather unavailable</span>"; }
-}
-
-/* Init */
-applyTranslations();
-renderNavbar();
-load();
-loadWeather();
 </script>
+
 </body>
 </html>

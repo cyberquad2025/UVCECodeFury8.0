@@ -8,14 +8,14 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
--- Crops listed by farmers
+-- Crops listed by farmers (with image support)
 CREATE TABLE IF NOT EXISTS crops (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     farmer_id INTEGER NOT NULL,
     crop_name TEXT NOT NULL,
     quantity INTEGER NOT NULL,
     price REAL NOT NULL,
-    image_url TEXT,
+    image_url TEXT, -- store relative path to uploaded image
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(farmer_id) REFERENCES users(id) ON DELETE CASCADE
 );

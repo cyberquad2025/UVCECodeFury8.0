@@ -5,63 +5,37 @@
 <title>AgriMitra | Crop Marketplace</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-:root {--green:#2d6a4f; --dark:#1b4332; --light:#d8f3dc; --bg:#f6fff9;}
+:root {--green:#2d6a4f;--dark:#1b4332;--light:#d8f3dc;--bg:#f6fff9;}
 *{box-sizing:border-box;}
-body{margin:0; font-family:Segoe UI,Arial; background:var(--bg); color:#222; transition: background 0.3s;}
-
-/* Navbar */
-nav{display:flex; justify-content:space-between; align-items:center;
-    background:var(--green); color:#fff; padding:12px 20px; position:relative; transition: background 0.3s;}
-.logo{font-weight:bold; font-size:20px;}
-nav ul{list-style:none; display:flex; gap:20px; margin:0; padding:0; transition: all 0.3s;}
-nav a{color:#fff; text-decoration:none; font-weight:500; transition: color 0.3s;}
+body{margin:0;font-family:Segoe UI,Arial;background:var(--bg);color:#222;transition: background 0.3s;}
+nav{display:flex;justify-content:space-between;align-items:center;background:var(--green);color:#fff;padding:12px 20px;position:relative;transition: background 0.3s;}
+.logo{font-weight:bold;font-size:20px;}
+nav ul{list-style:none;display:flex;gap:20px;margin:0;padding:0;transition: all 0.3s;}
+nav a{color:#fff;text-decoration:none;font-weight:500;transition: color 0.3s;}
 nav a:hover{text-decoration:underline;}
-.menu-toggle{display:none; font-size:26px; cursor:pointer;}
+.menu-toggle{display:none;font-size:26px;cursor:pointer;}
 @media(max-width:768px){
-  nav ul{display:none; flex-direction:column; gap:14px; background:rgba(0,0,0,0.9);
-         position:absolute; top:100%; left:0; width:100%; padding:18px 0; text-align:center;}
+  nav ul{display:none;flex-direction:column;gap:14px;background:rgba(0,0,0,0.9);position:absolute;top:100%;left:0;width:100%;padding:18px 0;text-align:center;}
   nav ul.show{display:flex;}
   .menu-toggle{display:block;}
 }
-
-/* Container */
-.container{max-width:1100px; margin:20px auto; padding:20px; display:flex; gap:20px; transition: all 0.3s;}
-
-/* Sidebar */
-.sidebar{flex:0 0 220px; background:#fff; border-radius:12px; padding:20px;
-         box-shadow:0 4px 12px rgba(0,0,0,0.08); height:fit-content; transition: all 0.3s;}
-.sidebar h3{margin-top:0; color:var(--green);}
-.sidebar ul{list-style:none; padding:0; margin:0;}
+.container{max-width:1100px;margin:20px auto;padding:20px;display:flex;gap:20px;transition: all 0.3s;}
+.sidebar{flex:0 0 220px;background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.08);height:fit-content;transition: all 0.3s;}
+.sidebar h3{margin-top:0;color:var(--green);}
+.sidebar ul{list-style:none;padding:0;margin:0;}
 .sidebar li{margin:10px 0;}
-.sidebar a{text-decoration:none; color:#333; font-weight:500; transition: color 0.3s;}
+.sidebar a{text-decoration:none;color:#333;font-weight:500;transition: color 0.3s;}
 .sidebar a:hover{color:var(--green);}
-
-/* Main */
-.main{flex:1; display:flex; flex-direction:column; gap:20px;}
-.card{background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s, box-shadow 0.3s;}
-.card:hover{transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,0.12);}
-.card h1{margin-top:0; color:var(--green);}
-
-/* Crops */
-.crops{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px;}
-.crop-card{background:#f8fdf7; padding:16px; border-radius:10px; border:1px solid #eee;
-           display:flex; flex-direction:column; justify-content:space-between; opacity:0; transform:translateY(20px);
-           animation: fadeInUp 0.6s forwards; transition: transform 0.3s, box-shadow 0.3s;}
-.crop-card:hover{transform:translateY(-4px); box-shadow:0 6px 16px rgba(0,0,0,0.1);}
-.crop-card h3{margin:0 0 8px; color:var(--green);}
-.crop-card small{color:#666;}
-.price{font-weight:bold; margin:8px 0;}
-.btn{background:var(--green); color:#fff; border:none; padding:10px; border-radius:6px;
-     cursor:pointer; font-size:14px; font-weight:500; transition:0.3s;}
-.btn:hover{background:var(--dark);}
-
-@keyframes fadeInUp{
-  0%{opacity:0; transform:translateY(20px);}
-  100%{opacity:1; transform:translateY(0);}
-}
-
-/* Responsive */
-@media(max-width:900px){ .container{flex-direction:column;} .sidebar{flex:none;} }
+.main{flex:1;display:flex;flex-direction:column;gap:20px;}
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.08);transition: transform 0.3s, box-shadow 0.3s;}
+.card:hover{transform: translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,0.12);}
+.crop-list{display:flex;flex-wrap:wrap;gap:20px;}
+.crop-card{background:#f8fdf7;border-radius:12px;padding:12px;flex:1 1 200px;display:flex;flex-direction:column;align-items:center;text-align:center;transition:all 0.3s;}
+.crop-card img{width:100%;height:140px;object-fit:cover;border-radius:6px;margin-bottom:8px;}
+button{padding:10px 16px;background:var(--green);color:#fff;border:none;border-radius:8px;cursor:pointer;transition:0.3s;}
+button:hover{background:var(--dark);}
+#langSelect{padding:6px;border-radius:6px;font-weight:600;margin-left:10px;}
+@media(max-width:900px){.container{flex-direction:column;}.sidebar{flex:none;}}
 </style>
 </head>
 <body>
@@ -70,7 +44,7 @@ nav a:hover{text-decoration:underline;}
   <div class="logo">🌾 AgriMitra</div>
   <span class="menu-toggle" onclick="toggleMenu()">☰</span>
   <ul id="navbar-links"></ul>
-  <select id="langSelect" onchange="changeLanguage()" style="padding:6px;border-radius:6px;font-weight:600;">
+  <select id="langSelect" onchange="changeLanguage()">
     <option value="en">English</option>
     <option value="hi">हिन्दी</option>
     <option value="ta">தமிழ்</option>
@@ -81,19 +55,18 @@ nav a:hover{text-decoration:underline;}
 
 <div class="container">
   <div class="sidebar">
-    <h3 id="sidebar-title">Marketplace Menu</h3>
+    <h3 id="menu-title">Marketplace Menu</h3>
     <ul>
-      <li><a href="#crops" id="sidebar-all-crops">🌱 All Crops</a></li>
-      <li><a href="buyer.html#orders" id="sidebar-my-orders">📦 My Orders</a></li>
-      <li><a href="buyer.html#insights" id="sidebar-insights">📊 Market Insights</a></li>
+      <li><a href="farmer.html">➕ Farmer Dashboard</a></li>
+      <li><a href="equipment.html">Equipment</a></li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
     </ul>
   </div>
 
   <div class="main">
-    <div class="card" id="crops">
-      <h1 id="main-title">Crop Marketplace</h1>
-      <p id="main-lead">Browse and order fresh crops directly from farmers</p>
-      <div id="list" class="crops">Loading crops...</div>
+    <div class="card">
+      <h2 id="market-title">🌱 Crop Marketplace</h2>
+      <div class="crop-list" id="list"></div>
     </div>
   </div>
 </div>
@@ -103,97 +76,50 @@ const API = "http://127.0.0.1:5000";
 let user = JSON.parse(localStorage.getItem("user")||"{}");
 
 const translations = {
-  en: { nav_home:"Home", nav_dashboard:"Dashboard", nav_equipment:"Equipment", nav_logout:"Logout", nav_login:"Login", nav_register:"Register", sidebar_title:"Marketplace Menu", sidebar_all_crops:"🌱 All Crops", sidebar_my_orders:"📦 My Orders", sidebar_insights:"📊 Market Insights", main_title:"Crop Marketplace", main_lead:"Browse and order fresh crops directly from farmers", loading_crops:"Loading crops...", no_crops:"No crops listed yet.", farmer:"👨‍🌾 Farmer: ", place_order:"Place Order", alert_login_order:"Please login to place order"},
-  hi: { nav_home:"होम", nav_dashboard:"डैशबोर्ड", nav_equipment:"उपकरण", nav_logout:"लॉगआउट", nav_login:"लॉगिन", nav_register:"रजिस्टर", sidebar_title:"मार्केटप्लेस मेन्यू", sidebar_all_crops:"🌱 सभी फसलें", sidebar_my_orders:"📦 मेरे ऑर्डर्स", sidebar_insights:"📊 मार्केट इनसाइट्स", main_title:"फसल मार्केटप्लेस", main_lead:"किसानों से सीधे ताज़ी फसलें देखें और ऑर्डर करें", loading_crops:"फसलें लोड हो रही हैं...", no_crops:"कोई फसल सूचीबद्ध नहीं है।", farmer:"👨‍🌾 किसान: ", place_order:"ऑर्डर करें", alert_login_order:"ऑर्डर करने के लिए लॉगिन करें"},
-  ta: { nav_home:"முகப்பு", nav_dashboard:"டாஷ்போர்டு", nav_equipment:"சாதனங்கள்", nav_logout:"வெளியேறு", nav_login:"உள்நுழை", nav_register:"பதிவு செய்", sidebar_title:"சந்தைபொருள் மெனு", sidebar_all_crops:"🌱 அனைத்து பயிர்கள்", sidebar_my_orders:"📦 எனது ஆர்டர்கள்", sidebar_insights:"📊 சந்தை நுண்ணறிவுகள்", main_title:"பயிர் சந்தை", main_lead:"விவசாயிகளிடமிருந்து நேரடியாக புதிய பயிர்களை உலாவவும் மற்றும் ஆர்டர் செய்யவும்", loading_crops:"பயிர்கள் ஏற்றப்படுகின்றன...", no_crops:"இதுவரை எந்த பயிர்களும் பட்டியலிடப்படவில்லை.", farmer:"👨‍🌾 விவசாயி: ", place_order:"ஆர்டர் செய்", alert_login_order:"ஆர்டர் செய்ய உள்நுழையவும்"},
-  te: { nav_home:"హోమ్", nav_dashboard:"డాష్‌బోర్డ్", nav_equipment:"పరికరాలు", nav_logout:"లాగ్ అవుట్", nav_login:"లాగిన్", nav_register:"రిజిస్టర్", sidebar_title:"మార్కెట్‌ప్లేస్ మెనూ", sidebar_all_crops:"🌱 అన్ని పంటలు", sidebar_my_orders:"📦 నా ఆర్డర్స్", sidebar_insights:"📊 మార్కెట్ ఇన్సైట్స్", main_title:"పంటల మార్కెట్", main_lead:"వ్యవసాయుల నుండి నేరుగా తాజా పంటలను బ్రౌజ్ చేసి ఆర్డర్ చేయండి", loading_crops:"పంటలు లోడ్ అవుతున్నాయి...", no_crops:"ఏ పంటలు లేవు.", farmer:"👨‍🌾 రైతు: ", place_order:"ఆర్డర్ చేయండి", alert_login_order:"ఆర్డర్ చేయడానికి లాగిన్ చేయండి"},
-  kn: { nav_home:"ಹೋಮ್", nav_dashboard:"ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", nav_equipment:"ಉಪಕರಣ", nav_logout:"ಲಾಗ್ ಔಟ್", nav_login:"ಲಾಗಿನ್", nav_register:"ರಿಜಿಸ್ಟರ್", sidebar_title:"ಮಾರುಕಟ್ಟೆ ಮೆನು", sidebar_all_crops:"🌱 ಎಲ್ಲಾ ಬೆಳೆಗಳು", sidebar_my_orders:"📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು", sidebar_insights:"📊 ಮಾರುಕಟ್ಟೆ ಇನ್ಸೈಟ್‌ಗಳು", main_title:"ಬೆಳೆ ಮಾರುಕಟ್ಟೆ", main_lead:"ಕೃಷಕರಿಂದ ನೇರವಾಗಿ تازಾ ಬೆಳೆಗಳನ್ನು ಬ್ರೌಸ್ ಮಾಡಿ ಆರ್ಡರ್ ಮಾಡಿ", loading_crops:"ಬೆಳೆಗಳು ಲೋಡ್ ಆಗುತ್ತಿವೆ...", no_crops:"ಯಾವುದೇ ಬೆಳೆಗಳಿಲ್ಲ.", farmer:"👨‍🌾 ರೈತ: ", place_order:"ಆರ್ಡರ್ ಮಾಡಿ", alert_login_order:"ಆರ್ಡರ್ ಮಾಡಲು ಲಾಗಿನ್ ಮಾಡಿ"}
+  en:{menu:"Marketplace Menu", market_title:"🌱 Crop Marketplace"},
+  hi:{menu:"मार्केटप्लेस मेन्यू", market_title:"🌱 फसल मार्केटप्लेस"},
+  ta:{menu:"சந்தை மெனு", market_title:"🌱 பயிர் சந்தை"},
+  te:{menu:"మార్కెట్‌ప్లేస్ మెనూ", market_title:"🌱 పంట మార్కెట్"},
+  kn:{menu:"ಮಾರುಕಟ್ಟೆ ಮೆನು", market_title:"🌱 ಬೆಳೆ ಮಾರುಕಟ್ಟೆ"}
 };
-
-let lang = localStorage.getItem("lang") || "en";
+let lang = localStorage.getItem("lang")||"en";
 let L = translations[lang];
 
-function toggleMenu(){ document.getElementById("navbar-links").classList.toggle("show"); }
-
-function logout(){ localStorage.removeItem("user"); location.reload(); }
-
-function renderNavbar(){
-  L = translations[localStorage.getItem("lang") || "en"];
-  user = JSON.parse(localStorage.getItem("user")||"{}");
-  const nav = document.getElementById("navbar-links");
-  if(user && user.id){
-    nav.innerHTML = `
-      <li><a href="index.html">${L.nav_home}</a></li>
-      <li><a href="buyer.html">${L.nav_dashboard}</a></li>
-      <li><a href="equipment.html">${L.nav_equipment}</a></li>
-      <li><a href="#" onclick="logout()">${L.nav_logout}</a></li>`;
-  } else {
-    nav.innerHTML = `
-      <li><a href="index.html">${L.nav_home}</a></li>
-      <li><a href="login.html">${L.nav_login}</a></li>
-      <li><a href="register.html">${L.nav_register}</a></li>
-      <li><a href="equipment.html">${L.nav_equipment}</a></li>`;
-  }
-}
-
-function applyTranslations(){
-  L = translations[localStorage.getItem("lang") || "en"];
-  document.title = L.main_title;
-  document.getElementById("sidebar-title").textContent = L.sidebar_title;
-  document.getElementById("sidebar-all-crops").textContent = L.sidebar_all_crops;
-  document.getElementById("sidebar-my-orders").textContent = L.sidebar_my_orders;
-  document.getElementById("sidebar-insights").textContent = L.sidebar_insights;
-  document.getElementById("main-title").textContent = L.main_title;
-  document.getElementById("main-lead").textContent = L.main_lead;
-  document.getElementById("list").textContent = L.loading_crops;
-  document.getElementById("langSelect").value = localStorage.getItem("lang") || "en";
-}
-
-function changeLanguage(){
-  const sel = document.getElementById("langSelect").value;
-  localStorage.setItem("lang", sel);
-  lang = sel;
-  applyTranslations();
+function applyTranslations(){ 
+  L = translations[localStorage.getItem("lang")||"en"];
+  document.getElementById("langSelect").value=lang;
+  document.getElementById("menu-title").textContent=L.menu;
+  document.getElementById("market-title").textContent=L.market_title;
   renderNavbar();
-  load();
 }
+function changeLanguage(){ lang=document.getElementById("langSelect").value; localStorage.setItem("lang",lang); applyTranslations();}
+function toggleMenu(){ document.getElementById("navbar-links").classList.toggle("show"); }
+function renderNavbar(){ 
+  const nav=document.getElementById("navbar-links");
+  nav.innerHTML=`<li><a href="index.html">Home</a></li><li><a href="farmer.html">Farmer</a></li><li><a href="equipment.html">Equipment</a></li>`;
+}
+function logout(){ localStorage.removeItem("user"); window.location="index.html"; }
 
 async function load(){
-  const res = await fetch(API + "/crops");
+  const res = await fetch(API+"/crops");
   const data = await res.json();
   const el = document.getElementById("list");
-  if(!data || !data.length){ el.innerHTML = `<p>${L.no_crops}</p>`; return; }
+  if(!data || !data.length){ el.innerHTML="<p>No crops available.</p>"; return; }
   el.innerHTML = data.map((c,i)=>`
     <div class="crop-card" style="animation-delay:${i*0.1}s">
-      <div>
-        <h3>${c.crop_name}</h3>
-        <div class="price">${c.quantity} units @ ₹${c.price}</div>
-        <small>${L.farmer}${c.farmer_name||"Unknown"}</small>
-      </div>
-      <button class="btn" onclick="order(${c.id})">${L.place_order}</button>
+      ${c.image_url?`<img src="${API}/${c.image_url}">`:''}
+      <h3>${c.crop_name}</h3>
+      <div class="price">${c.quantity} units @ ₹${c.price}</div>
+      <small>Farmer: ${c.farmer_name||'Unknown'}</small>
+      <button onclick="order(${c.id})">Place Order</button>
     </div>`).join("");
 }
 
-async function order(cropId){
-  user = JSON.parse(localStorage.getItem("user")||"{}");
-  if(!user.id){ alert(L.alert_login_order); window.location="login.html"; return; }
-  const res = await fetch(API + "/orders", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ crop_id:cropId, buyer_id:user.id })
-  });
-  const data = await res.json();
-  alert(data.message||data.error);
-}
+function order(id){ alert("Order feature coming soon for crop ID "+id); }
 
-window.addEventListener("storage", (e)=>{
-  if(e.key==="lang"){ applyTranslations(); renderNavbar(); load(); }
-});
-
-// INIT
 applyTranslations();
-renderNavbar();
 load();
 </script>
+
 </body>
 </html>
