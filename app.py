@@ -86,7 +86,7 @@ def login():
         })
     return jsonify({"error": "Invalid credentials"}), 401
 
-# ---------- Crops ----------
+# ---------- Crops CRUD ----------
 @app.post("/crops")
 def add_crop():
     farmer_id = request.form.get("farmer_id")
@@ -128,6 +128,51 @@ def list_crops():
     conn.close()
     return jsonify(rows)
 
+@app.get("/crops/<int:crop_id>")
+def get_crop(crop_id):
+    conn = get_db()
+    row = conn.execute("SELECT * FROM crops WHERE id=?", (crop_id,)).fetchone()
+    conn.close()
+    if not row:
+        return jsonify({"error": "Crop not found"}), 404
+    return jsonify(dict(row))
+
+@app.put("/crops/<int:crop_id>")
+def update_crop(crop_id):
+    crop_name = request.form.get("crop_name")
+    quantity = request.form.get("quantity")
+    price = request.form.get("price")
+    image = request.files.get("image")
+
+    conn = get_db()
+    row = conn.execute("SELECT * FROM crops WHERE id=?", (crop_id,)).fetchone()
+    if not row:
+        conn.close()
+        return jsonify({"error": "Crop not found"}), 404
+
+    image_url = row["image_url"]
+    if image:
+        filename = f"{int(datetime.datetime.utcnow().timestamp())}_{secure_filename(image.filename)}"
+        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        image.save(filepath)
+        image_url = f"{UPLOAD_FOLDER}/{filename}"
+
+    conn.execute(
+        "UPDATE crops SET crop_name=?, quantity=?, price=?, image_url=? WHERE id=?",
+        (crop_name, quantity, price, image_url, crop_id)
+    )
+    conn.commit()
+    conn.close()
+    return jsonify({"message": "Crop updated successfully"})
+
+@app.delete("/crops/<int:crop_id>")
+def delete_crop(crop_id):
+    conn = get_db()
+    conn.execute("DELETE FROM crops WHERE id=?", (crop_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"message": "Crop deleted successfully"})
+
 # ---------- Orders ----------
 @app.post("/orders")
 def create_order():
@@ -165,7 +210,7 @@ def list_orders():
     conn.close()
     return jsonify(rows)
 
-# ---------- Equipment ----------
+# ---------- Equipment CRUD ----------
 @app.post("/equipment")
 def add_equipment():
     farmer_id = request.form.get("farmer_id")
@@ -190,6 +235,42 @@ def list_equipment():
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()
     return jsonify(rows)
+
+@app.get("/equipment/<int:equip_id>")
+def get_equipment(equip_id):
+    conn = get_db()
+    row = conn.execute("SELECT * FROM equipment WHERE id=?", (equip_id,)).fetchone()
+    conn.close()
+    if not row:
+        return jsonify({"error": "Equipment not found"}), 404
+    return jsonify(dict(row))
+
+@app.put("/equipment/<int:equip_id>")
+def update_equipment(equip_id):
+    name = request.form.get("name")
+    rent_price = request.form.get("rent_price")
+
+    conn = get_db()
+    row = conn.execute("SELECT * FROM equipment WHERE id=?", (equip_id,)).fetchone()
+    if not row:
+        conn.close()
+        return jsonify({"error": "Equipment not found"}), 404
+
+    conn.execute(
+        "UPDATE equipment SET name=?, rent_price=? WHERE id=?",
+        (name, rent_price, equip_id)
+    )
+    conn.commit()
+    conn.close()
+    return jsonify({"message": "Equipment updated successfully"})
+
+@app.delete("/equipment/<int:equip_id>")
+def delete_equipment(equip_id):
+    conn = get_db()
+    conn.execute("DELETE FROM equipment WHERE id=?", (equip_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"message": "Equipment deleted successfully"})
 
 # ---------- Rentals ----------
 @app.post("/rentals")

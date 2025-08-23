@@ -12,7 +12,6 @@
       --white: #fff;
       --bg: linear-gradient(135deg, #43cea2, #185a9d);
     }
-
     * { box-sizing: border-box; }
     body {
       margin:0;
@@ -23,8 +22,6 @@
       flex-direction: column;
       min-height: 100vh;
     }
-
-    /* Weather strip */
     .weather-strip {
       display:flex;
       gap:12px;
@@ -44,9 +41,6 @@
       align-items:center;
       font-weight:600;
     }
-    .small-muted { opacity:0.9; font-weight:500; }
-
-    /* Navbar */
     nav {
       display:flex;
       justify-content:space-between;
@@ -66,15 +60,7 @@
       nav ul.show{display:flex;}
       .menu-toggle{display:block;}
     }
-
-    /* Signup card */
-    .main {
-      flex:1;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      padding:40px 20px;
-    }
+    .main { flex:1; display:flex; justify-content:center; align-items:center; padding:40px 20px; }
     .container {
       background: rgba(255,255,255,0.1);
       backdrop-filter: blur(6px);
@@ -85,56 +71,30 @@
       max-width: 400px;
       color: #fff;
     }
-    h2 {
-      text-align:center;
-      margin-bottom:20px;
-      font-size:28px;
-      font-weight:800;
-    }
+    h2 { text-align:center; margin-bottom:20px; font-size:28px; font-weight:800; }
     input, select, button {
-      width:100%;
-      padding:12px;
-      margin:8px 0;
-      border-radius:10px;
-      border:none;
-      font-size:15px;
+      width:100%; padding:12px; margin:8px 0;
+      border-radius:10px; border:none; font-size:15px;
     }
-    input, select {
-      background: rgba(255,255,255,0.9);
-      color:#222;
-    }
-    input:focus, select:focus {
-      outline:none;
-      box-shadow:0 0 6px rgba(45,106,79,0.5);
-    }
+    input, select { background: rgba(255,255,255,0.9); color:#222; }
+    input:focus, select:focus { outline:none; box-shadow:0 0 6px rgba(45,106,79,0.5); }
     button {
-      background: var(--green);
-      font-weight:bold;
-      cursor:pointer;
-      color:#fff;
-      border:none;
+      background: var(--green); font-weight:bold;
+      cursor:pointer; color:#fff; border:none;
       transition: 0.3s;
     }
     button:hover { background: var(--dark); }
     .switch { text-align:center; margin-top:12px; font-size:14px; }
     .switch a { color: var(--light); font-weight:bold; text-decoration:none; }
     .switch a:hover { text-decoration: underline; }
-
-    /* Responsive */
-    @media(max-width:480px){
-      .container{padding:25px 20px;}
-      h2{font-size:22px;}
-    }
   </style>
 </head>
 <body>
 
-<!-- Weather strip -->
 <div class="weather-strip" id="weatherStrip">
   <span class="small-muted">Loading weather…</span>
 </div>
 
-<!-- Navbar -->
 <nav>
   <div class="logo">🌾 AgriMitra</div>
   <span class="menu-toggle" onclick="toggleMenu()">☰</span>
@@ -146,7 +106,6 @@
   </ul>
 </nav>
 
-<!-- Signup Form -->
 <div class="main">
   <div class="container">
     <h2>🌱 Signup for AgriMitra</h2>
@@ -167,13 +126,12 @@
 </div>
 
 <script>
-const API = "http://127.0.0.1:5000";
+const API = "http://127.0.0.1:5000";  // Change if backend runs elsewhere
 
 function toggleMenu(){
   document.getElementById("navbar-links").classList.toggle("show");
 }
 
-/* Weather */
 async function loadWeather(){
   const el = document.getElementById('weatherStrip');
   try{
@@ -192,23 +150,28 @@ async function loadWeather(){
 }
 loadWeather();
 
-/* Signup form */
 document.getElementById("signupForm").addEventListener("submit", async (e)=>{
   e.preventDefault();
-  const res = await fetch(API+"/signup", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({
-      name: document.getElementById("signupName").value,
-      email: document.getElementById("signupEmail").value,
-      password: document.getElementById("signupPassword").value,
-      role: document.getElementById("signupRole").value
-    })
-  });
-  const data = await res.json();
-  alert(data.message || data.error);
-  if(data.message){
-    window.location = "login.html";
+  try {
+    const res = await fetch(API+"/signup", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        name: document.getElementById("signupName").value,
+        email: document.getElementById("signupEmail").value,
+        password: document.getElementById("signupPassword").value,
+        role: document.getElementById("signupRole").value
+      })
+    });
+    const data = await res.json();
+    if(res.ok){
+      alert(data.message || "Signup successful!");
+      window.location = "login.html";
+    } else {
+      alert(data.error || "Signup failed.");
+    }
+  } catch(err){
+    alert("❌ Error connecting to server: " + err.message);
   }
 });
 </script>
