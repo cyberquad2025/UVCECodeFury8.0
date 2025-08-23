@@ -1,237 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AgriMitra | Farmer Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --green: #2d6a4f;
-      --dark: #1b4332;
-      --light: #d8f3dc;
-      --bg: #f6fff9;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: #222;
-    }
+<meta charset="UTF-8">
+<title>AgriMitra | Farmer Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --green: #2d6a4f;
+  --dark: #1b4332;
+  --light: #d8f3dc;
+  --bg: #f6fff9;
+}
+* { box-sizing: border-box; margin:0; padding:0; }
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: #222;
+}
 
-    /* Weather Strip */
-    .weather-strip {
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:center;
-      padding:8px;
-      background: #40916c;
-      color:#fff;
-      font-size: 14px;
-      flex-wrap:wrap;
-    }
-    .weather-pill {
-      background: rgba(255,255,255,0.2);
-      padding:4px 10px;
-      border-radius: 999px;
-      font-weight:600;
-    }
+/* Weather Strip */
+.weather-strip {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
+  padding:8px;
+  background: #40916c;
+  color:#fff;
+  font-size: 14px;
+  flex-wrap:wrap;
+}
+.weather-pill {
+  background: rgba(255,255,255,0.2);
+  padding:4px 10px;
+  border-radius: 999px;
+  font-weight:600;
+}
 
-    /* Navbar */
-    nav {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background: var(--green);
-      color:#fff;
-      padding:12px 20px;
-      position:relative;
-    }
-    .logo { font-size:20px; font-weight:bold; }
-    nav ul { list-style:none; display:flex; gap:20px; margin:0; padding:0; }
-    nav a { color:#fff; text-decoration:none; font-weight:500; }
-    nav a:hover { text-decoration:underline; }
+/* Navbar */
+nav {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background: var(--green);
+  color:#fff;
+  padding:12px 20px;
+  position:relative;
+}
+.logo { font-size:20px; font-weight:bold; }
+nav ul { list-style:none; display:flex; gap:20px; margin:0; padding:0; }
+nav a { color:#fff; text-decoration:none; font-weight:500; }
+nav a:hover { text-decoration:underline; }
+.menu-toggle { display:none; font-size:26px; cursor:pointer; }
+@media(max-width:768px){
+  nav ul { display:none; flex-direction:column; gap:14px; background:rgba(0,0,0,0.9);
+           position:absolute; top:100%; left:0; width:100%; padding:18px 0; text-align:center; }
+  nav ul.show { display:flex; }
+  .menu-toggle { display:block; }
+}
 
-    /* Hamburger */
-    .menu-toggle { display:none; font-size:26px; cursor:pointer; }
-    @media(max-width:768px){
-      nav ul { display:none; flex-direction:column; gap:14px; background:rgba(0,0,0,0.9);
-               position:absolute; top:100%; left:0; width:100%; padding:18px 0; text-align:center; }
-      nav ul.show { display:flex; }
-      .menu-toggle { display:block; }
-    }
+/* Layout */
+.container { display:flex; padding:20px; gap:20px; max-width:1200px; margin:auto; }
+.sidebar {
+  flex:0 0 220px;
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  height:fit-content;
+}
+.sidebar h3 { margin-top:0; color: var(--green); font-size:18px; margin-bottom:10px; }
+.sidebar ul { list-style:none; padding:0; margin:0; }
+.sidebar li { margin:10px 0; }
+.sidebar a { text-decoration:none; color:#333; font-weight:500; }
+.sidebar a:hover { color:var(--green); }
 
-    /* Layout */
-    .container {
-      display:flex;
-      padding:20px;
-      gap:20px;
-    }
-    .sidebar {
-      flex:0 0 220px;
-      background:#fff;
-      padding:20px;
-      border-radius:12px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.08);
-      height:fit-content;
-    }
-    .sidebar h3 {
-      margin-top:0;
-      color: var(--green);
-      font-size:18px;
-    }
-    .sidebar ul { list-style:none; padding:0; margin:0; }
-    .sidebar li { margin:10px 0; }
-    .sidebar a { text-decoration:none; color:#333; font-weight:500; }
-    .sidebar a:hover { color:var(--green); }
+.main { flex:1; display:flex; flex-direction:column; gap:20px; }
 
-    .main {
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      gap:20px;
-    }
+/* Cards */
+.card {
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+.card h2 { margin-top:0; color: var(--green); margin-bottom:15px; }
 
-    /* Cards */
-    .card {
-      background:#fff;
-      padding:20px;
-      border-radius:12px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.08);
-    }
-    .card h2 { margin-top:0; color: var(--green); }
+input, button {
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:14px;
+}
+input:focus { border-color: var(--green); outline:none; box-shadow:0 0 5px rgba(64,145,108,0.3); }
+button {
+  background: var(--green);
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  border:none;
+  transition:0.3s;
+}
+button:hover { background: var(--dark); }
 
-    input, button {
-      width:100%;
-      padding:12px;
-      margin:8px 0;
-      border:1px solid #ccc;
-      border-radius:8px;
-      font-size:14px;
-    }
-    input:focus {
-      border-color: var(--green);
-      outline:none;
-      box-shadow:0 0 5px rgba(64,145,108,0.3);
-    }
-    button {
-      background: var(--green);
-      color:#fff;
-      font-weight:bold;
-      cursor:pointer;
-      border:none;
-      transition:0.3s;
-    }
-    button:hover { background: var(--dark); }
+ul.crops { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; }
+ul.crops li {
+  padding:12px;
+  border:1px solid #eee;
+  border-radius:8px;
+  background:#f8fdf7;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+ul.crops span { font-weight:500; }
 
-    ul.crops {
-      list-style:none; padding:0; margin:0;
-    }
-    ul.crops li {
-      padding:12px;
-      border:1px solid #eee;
-      border-radius:8px;
-      margin-bottom:8px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background:#f8fdf7;
-      flex-wrap:wrap;
-    }
-    ul.crops span { font-weight:500; }
+/* Language select */
+#langSelect { padding:6px; border-radius:6px; font-weight:600; margin-left:10px; }
 
-    /* Responsive */
-    @media(max-width:900px){
-      .container { flex-direction:column; }
-      .sidebar { flex:none; }
-    }
-    @media(max-width:600px){
-      .card { padding:16px; }
-      input, button { font-size:13px; padding:10px; }
-      .sidebar { padding:16px; }
-      .sidebar h3 { font-size:16px; }
-    }
-  </style>
+/* Responsive */
+@media(max-width:900px){ .container { flex-direction:column; } .sidebar{ flex:none; } }
+@media(max-width:600px){ .card{ padding:16px; } input, button{ font-size:13px; padding:10px; } .sidebar{ padding:16px; } .sidebar h3{ font-size:16px; } }
+</style>
 </head>
 <body>
 
-  <!-- Weather -->
-  <div class="weather-strip" id="weatherStrip">
-    <span>Loading weather...</span>
-  </div>
+<!-- Weather -->
+<div class="weather-strip" id="weatherStrip"><span>Loading weather...</span></div>
 
-  <!-- Navbar -->
-  <nav>
-    <div class="logo">🌾 AgriMitra</div>
-    <span class="menu-toggle" onclick="toggleMenu()">☰</span>
-    <ul id="navbar-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="marketplace.html">Crop Marketplace</a></li>
-      <li><a href="equipment.html">Equipment</a></li>
-      <li><a href="#" onclick="logout()">Logout</a></li>
+<!-- Navbar -->
+<nav>
+  <div class="logo">🌾 AgriMitra</div>
+  <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+  <ul id="navbar-links"></ul>
+  <select id="langSelect" onchange="changeLanguage()">
+    <option value="en">English</option>
+    <option value="hi">हिन्दी</option>
+    <option value="ta">தமிழ்</option>
+    <option value="te">తెలుగు</option>
+    <option value="kn">ಕನ್ನಡ</option>
+  </select>
+</nav>
+
+<!-- Layout -->
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h3 id="menu-title">Farmer Menu</h3>
+    <ul>
+      <li><a href="#addCrop" id="menu-add">➕ Add Crop</a></li>
+      <li><a href="#myCrops" id="menu-my">🌱 My Crops</a></li>
+      <li><a href="#insights" id="menu-insights">📊 Market Insights</a></li>
     </ul>
-  </nav>
+  </div>
 
-  <!-- Layout -->
-  <div class="container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <h3>Farmer Menu</h3>
-      <ul>
-        <li><a href="#addCrop">➕ Add Crop</a></li>
-        <li><a href="#myCrops">🌱 My Crops</a></li>
-        <li><a href="#insights">📊 Market Insights</a></li>
-      </ul>
+  <!-- Main content -->
+  <div class="main">
+    <div class="card" id="addCrop">
+      <h2 id="add-title">➕ Add New Crop</h2>
+      <form id="cropForm">
+        <input type="text" id="cropName" placeholder="Crop Name" required>
+        <input type="number" id="quantity" placeholder="Quantity" required>
+        <input type="number" id="price" placeholder="Price per unit (₹)" required>
+        <button type="submit" id="add-btn">Add Crop</button>
+      </form>
     </div>
 
-    <!-- Main content -->
-    <div class="main">
-      <div class="card" id="addCrop">
-        <h2>➕ Add New Crop</h2>
-        <form id="cropForm">
-          <input type="text" id="cropName" placeholder="Crop Name" required>
-          <input type="number" id="quantity" placeholder="Quantity" required>
-          <input type="number" id="price" placeholder="Price per unit (₹)" required>
-          <button type="submit">Add Crop</button>
-        </form>
-      </div>
+    <div class="card" id="myCrops">
+      <h2 id="my-title">🌱 My Crops</h2>
+      <ul class="crops" id="cropsList"></ul>
+    </div>
 
-      <div class="card" id="myCrops">
-        <h2>🌱 My Crops</h2>
-        <ul class="crops" id="cropsList"></ul>
-      </div>
-
-      <div class="card" id="insights">
-        <h2>📊 Market Insights</h2>
-        <p>Coming soon: price comparison graphs, demand forecasts and more.</p>
-      </div>
+    <div class="card" id="insights">
+      <h2 id="insights-title">📊 Market Insights</h2>
+      <p id="insights-text">Coming soon: price comparison graphs, demand forecasts and more.</p>
     </div>
   </div>
+</div>
 
 <script>
 const API = "http://127.0.0.1:5000";
-const user = JSON.parse(localStorage.getItem("user") || "{}");
+let user = JSON.parse(localStorage.getItem("user") || "{}");
 if(!user.id || user.role!=="farmer") window.location="index.html";
 
-/* Navbar toggle */
-function toggleMenu(){
-  document.getElementById("navbar-links").classList.toggle("show");
+/* Language support */
+const translations = {
+  en: { nav_home:"Home", nav_market:"Crop Marketplace", nav_equipment:"Equipment", nav_logout:"Logout", menu:"Farmer Menu", add_title:"➕ Add New Crop", add_btn:"Add Crop", my_title:"🌱 My Crops", insights_title:"📊 Market Insights", insights_text:"Coming soon: price comparison graphs, demand forecasts and more." },
+  hi: { nav_home:"होम", nav_market:"फसल मार्केट", nav_equipment:"उपकरण", nav_logout:"लॉगआउट", menu:"किसान मेन्यू", add_title:"➕ नई फसल जोड़ें", add_btn:"जोड़ें", my_title:"🌱 मेरी फसलें", insights_title:"📊 मार्केट इनसाइट्स", insights_text:"जल्द आ रहा है: कीमत तुलना ग्राफ़, मांग पूर्वानुमान और अधिक।" },
+  ta: { nav_home:"முகப்பு", nav_market:"பயிர் சந்தை", nav_equipment:"சாதனங்கள்", nav_logout:"வெளியேறு", menu:"விவசாயி மெனு", add_title:"➕ புதிய பயிர் சேர்க்கவும்", add_btn:"சேர்க்கவும்", my_title:"🌱 என் பயிர்கள்", insights_title:"📊 சந்தை அறிவுரைகள்", insights_text:"விரைவில்: விலை ஒப்பீடு வரைபடங்கள், தேவைக் கணிப்புகள் மற்றும் மேலும்." },
+  te: { nav_home:"హోమ్", nav_market:"పంట మార్కెట్", nav_equipment:"పరికరాలు", nav_logout:"లాగ్ అవుట్", menu:"రైతు మెనూ", add_title:"➕ కొత్త పంట చేర్చు", add_btn:"చేర్చు", my_title:"🌱 నా పంటలు", insights_title:"📊 మార్కెట్ సమాచారాలు", insights_text:"చిన్న కాలంలో: ధరల సరిపోలిక గ్రాఫ్‌లు, డిమాండ్ అంచనాలు మరియు మరిన్ని." },
+  kn: { nav_home:"ಹೋಮ್", nav_market:"ಹಣಿಕೊಡು ಮಾರುಕಟ್ಟೆ", nav_equipment:"ಉಪಕರಣ", nav_logout:"ಲಾಗ್ ಔಟ್", menu:"ರೈತ ಮೆನು", add_title:"➕ ಹೊಸ ಬೆಳೆ ಸೇರಿಸಿ", add_btn:"ಸೇರಿಸಿ", my_title:"🌱 ನನ್ನ ಬೆಳೆಗಳು", insights_title:"📊 ಮಾರುಕಟ್ಟೆ ಮಾಹಿತಿ", insights_text:"ಬಗ್ಗೆ ಬರುತ್ತಿದೆ: ಬೆಲೆ ಹೋಲಿಕೆ ಗ್ರಾಫ್‌ಗಳು, ಬೇಡಿಕೆಯ ಅಂದಾಜು ಮತ್ತು ಇನ್ನಷ್ಟು." }
+};
+let lang = localStorage.getItem("lang") || "en";
+let L = translations[lang];
+
+/* Apply language */
+function applyTranslations(){
+  L = translations[localStorage.getItem("lang")||"en"];
+  document.getElementById("langSelect").value = lang;
+  document.getElementById("menu-title").textContent = L.menu;
+  document.getElementById("add-title").textContent = L.add_title;
+  document.getElementById("add-btn").textContent = L.add_btn;
+  document.getElementById("my-title").textContent = L.my_title;
+  document.getElementById("insights-title").textContent = L.insights_title;
+  document.getElementById("insights-text").textContent = L.insights_text;
+  renderNavbar();
 }
+
+/* Change language */
+function changeLanguage(){
+  lang = document.getElementById("langSelect").value;
+  localStorage.setItem("lang", lang);
+  applyTranslations();
+}
+
+/* Navbar rendering */
+function renderNavbar(){
+  const nav = document.getElementById("navbar-links");
+  nav.innerHTML = `<li><a href="index.html">${L.nav_home}</a></li>
+                   <li><a href="marketplace.html">${L.nav_market}</a></li>
+                   <li><a href="equipment.html">${L.nav_equipment}</a></li>
+                   <li><a href="#" onclick="logout()">${L.nav_logout}</a></li>`;
+}
+
+/* Navbar toggle */
+function toggleMenu(){ document.getElementById("navbar-links").classList.toggle("show"); }
 
 /* Logout */
-function logout(){
-  localStorage.removeItem("user");
-  window.location="index.html";
-}
+function logout(){ localStorage.removeItem("user"); window.location="index.html"; }
 
 /* Add Crop */
-document.getElementById("cropForm").addEventListener("submit", async (e)=>{
+document.getElementById("cropForm").addEventListener("submit", async e=>{
   e.preventDefault();
   const res = await fetch(API+"/crops", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({
+    body:JSON.stringify({
       farmer_id: user.id,
       crop_name: document.getElementById("cropName").value,
       quantity: +document.getElementById("quantity").value,
@@ -244,32 +250,30 @@ document.getElementById("cropForm").addEventListener("submit", async (e)=>{
   loadCrops();
 });
 
-/* Load Crops */
+/* Load crops */
 async function loadCrops(){
   const res = await fetch(API+"/crops?farmer_id="+user.id);
   const crops = await res.json();
-  document.getElementById("cropsList").innerHTML =
-    crops.map(c=>`<li><span>${c.crop_name} - ${c.quantity} units @ ₹${c.price}</span></li>`).join("");
+  document.getElementById("cropsList").innerHTML = crops.map(c=>`<li><span>${c.crop_name} - ${c.quantity} units @ ₹${c.price}</span></li>`).join("");
 }
-loadCrops();
 
 /* Weather */
 async function loadWeather(){
   const el = document.getElementById('weatherStrip');
-  try {
-    const pos = await new Promise((resolve,reject)=>{
-      navigator.geolocation.getCurrentPosition(resolve,reject);
-    });
-    const {latitude:lat,longitude:lon}=pos.coords;
-    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-    const j=await r.json();
-    const w=j.current_weather;
+  try{
+    const pos = await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej));
+    const {latitude:lat,longitude:lon} = pos.coords;
+    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+    const j = await r.json();
+    const w = j.current_weather;
     el.innerHTML = `<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
                     <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
-  }catch(e){
-    el.innerHTML = `<span>Weather unavailable</span>`;
-  }
+  }catch(e){ el.innerHTML = "<span>Weather unavailable</span>"; }
 }
+
+/* Init */
+applyTranslations();
+loadCrops();
 loadWeather();
 </script>
 </body>

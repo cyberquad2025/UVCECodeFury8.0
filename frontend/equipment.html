@@ -1,203 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>AgriMitra | Equipment Marketplace</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --green: #2d6a4f;
-      --dark: #1b4332;
-      --bg: #f6fff9;
-      --light: #d8f3dc;
-    }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body {
-      font-family:'Segoe UI', sans-serif;
-      background: var(--bg);
-      color:#222;
-    }
+<meta charset="utf-8">
+<title>AgriMitra | Equipment Marketplace</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --green:#2d6a4f; --dark:#1b4332; --bg:#f6fff9; --light:#d8f3dc;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:#222;transition:0.3s;}
 
-    /* Weather strip */
-    .weather-strip {
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:center;
-      padding:8px;
-      background: #40916c;
-      color:#fff;
-      font-size:14px;
-      flex-wrap:wrap;
-    }
-    .weather-pill {
-      background: rgba(255,255,255,0.2);
-      padding:4px 10px;
-      border-radius:999px;
-      font-weight:600;
-    }
+/* Weather Strip */
+.weather-strip{display:flex;gap:12px;align-items:center;justify-content:center;padding:8px;background:rgba(0,0,0,0.22);color:#fff;font-size:14px;flex-wrap:wrap;}
+.weather-pill{background: rgba(255,255,255,0.12);padding:6px 10px;border-radius:999px;font-weight:600;}
 
-    /* Navbar */
-    nav {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background: var(--green);
-      color:#fff;
-      padding:12px 20px;
-      position:relative;
-    }
-    .logo { font-size:20px; font-weight:bold; }
-    nav ul { list-style:none; display:flex; gap:20px; }
-    nav a { color:#fff; text-decoration:none; font-weight:500; }
-    nav a:hover { text-decoration:underline; }
-    .menu-toggle { display:none; font-size:26px; cursor:pointer; }
-    @media(max-width:768px){
-      nav ul { display:none; flex-direction:column; background:rgba(0,0,0,0.9);
-               position:absolute; top:100%; left:0; width:100%; padding:16px 0; text-align:center; gap:16px; }
-      nav ul.show { display:flex; }
-      .menu-toggle { display:block; }
-    }
+/* Navbar */
+nav{display:flex;justify-content:space-between;align-items:center;background:var(--green);color:#fff;padding:12px 20px;position:relative;}
+.logo{font-size:20px;font-weight:bold;}
+nav ul{list-style:none;display:flex;gap:20px;margin:0;}
+nav a{color:#fff;text-decoration:none;font-weight:500;}
+nav a:hover{text-decoration:underline;}
+.menu-toggle{display:none;font-size:26px;cursor:pointer;}
+@media(max-width:768px){
+  nav ul{display:none;flex-direction:column;background:rgba(0,0,0,0.9);position:absolute;top:100%;left:0;width:100%;padding:16px 0;text-align:center;gap:16px;}
+  nav ul.show{display:flex;}
+  .menu-toggle{display:block;}
+}
+#langSelect{padding:6px;border-radius:6px;font-weight:600;}
 
-    /* Page container */
-    .container {
-      max-width:1100px;
-      margin:20px auto;
-      padding:20px;
-      display:flex;
-      flex-direction:column;
-      gap:20px;
-    }
+/* Container */
+.container{max-width:1100px;margin:20px auto;padding:20px;display:flex;flex-direction:column;gap:20px;}
+h1{color:var(--green);margin-bottom:6px;}
+p.lead{color:#555;margin-bottom:20px;}
 
-    h1 { color:var(--green); margin-bottom:6px; }
-    p.lead { color:#555; margin-bottom:20px; }
-
-    /* Equipment grid */
-    .grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
-      gap:20px;
-    }
-    .card {
-      background:#fff;
-      border-radius:12px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.08);
-      padding:16px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      transition:transform 0.2s;
-    }
-    .card:hover { transform:translateY(-4px); }
-    .card h3 { margin:0 0 8px; color:var(--dark); }
-    .card .meta { font-size:14px; color:#555; margin-bottom:8px; }
-    .card .price { font-weight:bold; color:var(--green); margin-bottom:12px; }
-    .card button {
-      background: var(--green);
-      color:#fff;
-      border:none;
-      padding:10px;
-      border-radius:8px;
-      cursor:pointer;
-      font-size:14px;
-      transition:0.2s;
-    }
-    .card button:hover { background: var(--dark); }
-  </style>
+/* Equipment grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+.card{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);padding:16px;display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.2s;}
+.card:hover{transform:translateY(-4px);}
+.card img{width:100%;height:150px;object-fit:cover;border-radius:8px;margin-bottom:10px;}
+.card h3{margin:0 0 8px;color:var(--dark);}
+.card .meta{font-size:14px;color:#555;margin-bottom:8px;}
+.card .price{font-weight:bold;color:var(--green);margin-bottom:12px;}
+.card button{background:var(--green);color:#fff;border:none;padding:10px;border-radius:8px;cursor:pointer;font-size:14px;transition:0.2s;}
+.card button:hover{background:var(--dark);}
+</style>
 </head>
 <body>
 
-  <!-- Weather -->
-  <div class="weather-strip" id="weatherStrip">
-    <span>Loading weather...</span>
-  </div>
+<div class="weather-strip" id="weatherStrip"><span>Loading weather...</span></div>
 
-  <!-- Navbar -->
-  <nav>
-    <div class="logo">🌾 AgriMitra</div>
-    <span class="menu-toggle" onclick="toggleMenu()">☰</span>
-    <ul id="navbar-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="marketplace.html">Crop Marketplace</a></li>
-      <li><a href="equipment.html">Equipment</a></li>
-      <li><a href="#" onclick="logout()">Logout</a></li>
-    </ul>
-  </nav>
+<nav>
+  <div class="logo">🌾 AgriMitra</div>
+  <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+  <ul id="navbar-links"></ul>
+  <select id="langSelect" onchange="changeLanguage()">
+    <option value="en">English</option>
+    <option value="hi">हिन्दी</option>
+    <option value="ta">தமிழ்</option>
+    <option value="te">తెలుగు</option>
+    <option value="kn">ಕನ್ನಡ</option>
+  </select>
+</nav>
 
-  <!-- Page content -->
-  <div class="container">
-    <div>
-      <h1>⚙️ Equipment Marketplace</h1>
-      <p class="lead">Browse and rent farming equipment from nearby farmers</p>
-    </div>
-    <div class="grid" id="list">Loading equipment...</div>
+<div class="container">
+  <div>
+    <h1 id="main-title">⚙️ Equipment Marketplace</h1>
+    <p class="lead" id="main-lead">Browse and rent farming equipment from nearby farmers</p>
   </div>
+  <div class="grid" id="list">Loading equipment...</div>
+</div>
 
 <script>
-const API = "http://127.0.0.1:5000";
+const translations = {
+  en: { nav_home:"Home", nav_market:"Crop Marketplace", nav_fertilizers:"Fertilizers & Manures", nav_equipment:"Equipment", nav_dashboard:"Dashboard", nav_logout:"Logout", nav_login:"Login/Signup", main_title:"⚙️ Equipment Marketplace", main_lead:"Browse and rent farming equipment from nearby farmers", loading_eq:"Loading equipment...", book:"Book Now", alert_login:"Please login to book" },
+  hi: { nav_home:"होम", nav_market:"फसल बाज़ार", nav_fertilizers:"उर्वरक और खाद", nav_equipment:"उपकरण", nav_dashboard:"डैशबोर्ड", nav_logout:"लॉगआउट", nav_login:"लॉगिन/साइनअप", main_title:"⚙️ उपकरण मार्केटप्लेस", main_lead:"पास के किसानों से कृषि उपकरण ब्राउज़ और किराए पर लें", loading_eq:"उपकरण लोड हो रहे हैं...", book:"बुक करें", alert_login:"बुक करने के लिए लॉगिन करें" },
+  ta: { nav_home:"முகப்பு", nav_market:"பயிர் சந்தை", nav_fertilizers:"உரங்கள் மற்றும் உரங்கள்", nav_equipment:"சாதனங்கள்", nav_dashboard:"டாஷ்போர்ட்", nav_logout:"வெளியேறு", nav_login:"உள்நுழை/பதிவு செய்", main_title:"⚙️ சாதனங்கள் சந்தை", main_lead:"நெருங்கிய விவசாயிகளிடமிருந்து உபகரணங்களை உலாவவும் மற்றும் வாடகைக்கு எடுக்கவும்", loading_eq:"சாதனங்கள் ஏற்றப்படுகிறது...", book:"வாடகை எடு", alert_login:"வாடகைக்கு உள்நுழையவும்" },
+  te: { nav_home:"హోమ్", nav_market:"పంటల మార్కెట్‌ప్లేస్", nav_fertilizers:"ఎరువులు & సేంద్రీయ ఎరువులు", nav_equipment:"పరికరాలు", nav_dashboard:"డాష్‌బోర్డ్", nav_logout:"లాగ్ అవుట్", nav_login:"లాగిన్/సైన్-అప్", main_title:"⚙️ పరికరాల మార్కెట్", main_lead:"సమీప రైతుల నుండి పరికరాలను బ్రౌజ్ చేసి అద్దెకు తీసుకోండి", loading_eq:"పరికరాలు లోడ్ అవుతున్నాయి...", book:"బుక్ చేయండి", alert_login:"బుక్ చేయడానికి లాగిన్ చేయండి" },
+  kn: { nav_home:"ಹೋಮ್", nav_market:"ಬೆಳೆ ಮಾರುಕಟ್ಟೆ", nav_fertilizers:"ಗೊಬ್ಬರ ಮತ್ತು ರಸಗೊಬ್ಬರಗಳು", nav_equipment:"ಉಪಕರಣ", nav_dashboard:"ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", nav_logout:"ಲಾಗ್ ಔಟ್", nav_login:"ಲಾಗಿನ್/ಸೈನ್-ಅಪ್", main_title:"⚙️ ಉಪಕರಣ ಮಾರುಕಟ್ಟೆ", main_lead:"ಹತ್ತಿರದ ರೈತರಿಂದ ಕೃಷಿ ಉಪಕರಣಗಳನ್ನು ಬ್ರೌಸ್ ಮಾಡಿ ಮತ್ತು ಬಾಡಿಗೆಗೆ ಪಡೆಯಿರಿ", loading_eq:"ಉಪಕರಣ ಲೋಡ್ ಆಗುತ್ತಿದೆ...", book:"ಬುಕ್ ಮಾಡಿ", alert_login:"ಬುಕ್ ಮಾಡಲು ಲಾಗಿನ್ ಮಾಡಿ" }
+};
 
-/* Toggle Navbar */
-function toggleMenu(){
-  document.getElementById("navbar-links").classList.toggle("show");
+let lang = localStorage.getItem("lang") || "en";
+let L = translations[lang];
+let user = JSON.parse(localStorage.getItem("user")||"{}");
+
+function toggleMenu(){ document.getElementById("navbar-links").classList.toggle("show"); }
+function logout(){ localStorage.removeItem("user"); renderNavbar(); window.location="index.html"; }
+
+function renderNavbar(){
+  L = translations[localStorage.getItem("lang")||"en"];
+  user = JSON.parse(localStorage.getItem("user")||"{}");
+  const nav = document.getElementById("navbar-links");
+  nav.innerHTML = `
+    <li><a href="index.html">${L.nav_home}</a></li>
+    <li><a href="marketplace.html">${L.nav_market}</a></li>
+    <li><a href="fertilizers.html">${L.nav_fertilizers}</a></li>
+    <li><a href="equipment.html">${L.nav_equipment}</a></li>
+    ${user && user.id ? `<li><a href="${user.role==="farmer"?"farmer.html":"buyer.html"}">${L.nav_dashboard}</a></li>
+                         <li><a href="#" onclick="logout()">${L.nav_logout}</a></li>` : `<li><a href="login.html">${L.nav_login}</a></li>`}
+  `;
 }
 
-/* Logout */
-function logout(){
-  localStorage.removeItem("user");
-  window.location="index.html";
+function applyTranslations(){
+  L = translations[localStorage.getItem("lang")||"en"];
+  document.getElementById("main-title").textContent = L.main_title;
+  document.getElementById("main-lead").textContent = L.main_lead;
+  document.getElementById("langSelect").value = localStorage.getItem("lang")||"en";
+}
+
+function changeLanguage(){
+  const sel = document.getElementById("langSelect").value;
+  localStorage.setItem("lang", sel);
+  applyTranslations();
+  renderNavbar();
+  load();
 }
 
 /* Load Equipment */
-async function load(){
-  const res = await fetch(API + "/equipment?available=1");
-  const data = await res.json();
+function load(){
   const el = document.getElementById("list");
-  if(!data || !data.length){ el.innerHTML = "<p>No equipment listed yet.</p>"; return; }
-  el.innerHTML = data.map(e=>`
+  el.textContent = L.loading_eq;
+
+  const sample = [
+    {id:1,name:"Tractor",farmer_name:"Ravi Kumar",rent_price:2000,img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1DzqFJ-uX4N9Hm1AO-o88YUgG40sl6WPJTg&s"},
+    {id:2,name:"Rotavator",farmer_name:"Sita Devi",rent_price:1200,img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN5LCkdhmbRlrtQmIHBxj945EQM3UaL4VHng&s"},
+    {id:3,name:"Seeder",farmer_name:"Mohan",rent_price:800,img:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/National_Agro_Happy_Seeder.jpg/1200px-National_Agro_Happy_Seeder.jpg"},
+    {id:4,name:"Sprayer",farmer_name:"Anil",rent_price:400,img:"https://pre-live-admin.balwaan.com/uploads/media/2024/manual-sprayer-for-garden-20-liter-1.jpg"},
+    {id:5,name:"Harvester",farmer_name:"Lakshmi",rent_price:2500,img:"https://www.mechanicalpower.net/wp-content/uploads/2023/05/Combine-Harvester.jpg"}
+  ];
+
+  el.innerHTML = sample.map(e=>`
     <div class="card">
-      <div>
-        <h3>${e.name}</h3>
-        <div class="meta">By: ${e.farmer_name || 'Farmer #'+e.farmer_id}</div>
-        <div class="price">₹${e.rent_price}/day</div>
-      </div>
-      <button onclick="book(${e.id})">Book Now</button>
+      <img src="${e.img}" alt="${e.name}">
+      <h3>${e.name}</h3>
+      <div class="meta">By: ${e.farmer_name}</div>
+      <div class="price">₹${e.rent_price}/day</div>
+      <button onclick="book(${e.id})">${L.book}</button>
     </div>
   `).join("");
 }
 
 /* Book equipment */
-async function book(id){
-  const user = JSON.parse(localStorage.getItem("user")||"{}");
-  if(!user.id){ alert("Please login to book"); window.location="index.html"; return; }
+function book(id){
+  user = JSON.parse(localStorage.getItem("user")||"{}");
+  if(!user.id){ alert(L.alert_login); window.location="login.html"; return; }
   const start = prompt("Start date (YYYY-MM-DD)");
   const end = prompt("End date (YYYY-MM-DD)");
   if(!start||!end) return;
-  const res = await fetch(API + "/rentals", {
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ equipment_id:id, user_id:user.id, start_date:start, end_date:end })
-  });
-  const data = await res.json();
-  alert(data.message || data.error);
+  alert(`Equipment booked from ${start} to ${end}`);
 }
-load();
 
 /* Weather */
 async function loadWeather(){
   const el = document.getElementById('weatherStrip');
-  try {
-    const pos = await new Promise((resolve,reject)=>{
-      navigator.geolocation.getCurrentPosition(resolve,reject);
-    });
-    const {latitude:lat,longitude:lon}=pos.coords;
-    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-    const j=await r.json();
-    const w=j.current_weather;
+  try{
+    const pos = await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej));
+    const {latitude:lat,longitude:lon} = pos.coords;
+    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+    const j = await r.json();
+    const w = j.current_weather;
     el.innerHTML = `<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
                     <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
-  }catch(e){
-    el.innerHTML = `<span>Weather unavailable</span>`;
-  }
+  }catch(e){ el.innerHTML="<span class='weather-pill'>⚠️ Weather unavailable</span>"; }
 }
+
+/* Init */
+applyTranslations();
+renderNavbar();
+load();
 loadWeather();
 </script>
 </body>
