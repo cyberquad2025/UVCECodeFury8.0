@@ -139,6 +139,14 @@
       <li id="login-link"><a href="login.html">Login/Signup</a></li>
       <li id="logout-link" style="display:none;"><a href="#" onclick="logout()">Logout</a></li>
     </ul>
+    <!-- Language Selector -->
+    <select id="langSelect" onchange="changeLanguage()" style="padding:6px;border-radius:6px;font-weight:600;">
+      <option value="en" selected>English</option>
+      <option value="hi">हिन्दी</option>
+      <option value="kn">ಕನ್ನಡ</option>
+      <option value="te">తెలుగు</option>
+      <option value="ta">தமிழ்</option>
+    </select>
   </nav>
 
   <!-- Price ticker -->
@@ -190,6 +198,7 @@ function toggleMenu(){
   document.getElementById("navbar-links").classList.toggle("show");
 }
 const API = (window.location.protocol && window.location.protocol.startsWith('http')) ? window.location.origin : 'http://127.0.0.1:5000';
+
 /* Navbar logic */
 function updateNavbar(){
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -249,6 +258,108 @@ document.getElementById('priceForm').addEventListener('submit',async ev=>{
     else{out.textContent=`No price found for ${crop} in ${region}.`;}
   }catch(e){out.textContent="Cannot fetch prices now.";}
 });
+
+/* 🔤 Language Translations */
+const translations = {
+  en: {
+    hero_title: "Empowering Farmers,<br> Transforming Agriculture",
+    hero_lead: "A transparent platform that helps farmers get fair prices, rent equipment affordably and plan according to weather.",
+    sell_btn: "Sell Your Crops",
+    equip_btn: "Find Equipment",
+    widget_title: "🔎 Check Market Price",
+    widget_result: "Get the latest price for your crop and region.",
+    nav_home: "Home",
+    nav_market: "Crop Marketplace",
+    nav_equip: "Equipment",
+    nav_login: "Login/Signup",
+    nav_dashboard: "Dashboard",
+    nav_logout: "Logout"
+  },
+  hi: {
+    hero_title: "किसानों को सशक्त बनाना,<br> कृषि को बदलना",
+    hero_lead: "एक पारदर्शी मंच जो किसानों को उचित मूल्य दिलाने, सस्ती दरों पर उपकरण किराए पर लेने और मौसम के अनुसार योजना बनाने में मदद करता है।",
+    sell_btn: "अपनी फसल बेचें",
+    equip_btn: "उपकरण खोजें",
+    widget_title: "🔎 बाज़ार भाव देखें",
+    widget_result: "अपनी फसल और क्षेत्र का नवीनतम भाव प्राप्त करें।",
+    nav_home: "मुखपृष्ठ",
+    nav_market: "फसल बाज़ार",
+    nav_equip: "उपकरण",
+    nav_login: "लॉगिन/साइनअप",
+    nav_dashboard: "डैशबोर्ड",
+    nav_logout: "लॉगआउट"
+  },
+  kn: {
+    hero_title: "ರೈತರ ಶಕ್ತಿ,<br> ಕೃಷಿಯ ಪರಿವರ್ತನೆ",
+    hero_lead: "ರೈತರಿಗೆ ನ್ಯಾಯಯುತ ಬೆಲೆ ಸಿಗಲು, ಕಡಿಮೆ ದರದಲ್ಲಿ ಯಂತ್ರೋಪಕರಣ ಬಾಡಿಗೆಗೆ ಪಡೆಯಲು ಮತ್ತು ಹವಾಮಾನಕ್ಕೆ ತಕ್ಕಂತೆ ಯೋಜಿಸಲು ಸಹಾಯ ಮಾಡುವ ಪಾರದರ್ಶಕ ವೇದಿಕೆ.",
+    sell_btn: "ನಿಮ್ಮ ಬೆಳೆಗಳನ್ನು ಮಾರಾಟ ಮಾಡಿ",
+    equip_btn: "ಉಪಕರಣಗಳನ್ನು ಹುಡುಕಿ",
+    widget_title: "🔎 ಮಾರುಕಟ್ಟೆ ಬೆಲೆ ಪರಿಶೀಲಿಸಿ",
+    widget_result: "ನಿಮ್ಮ ಬೆಳೆ ಮತ್ತು ಪ್ರದೇಶದ ಇತ್ತೀಚಿನ ಬೆಲೆ ಪಡೆಯಿರಿ.",
+    nav_home: "ಮುಖಪುಟ",
+    nav_market: "ಬೆಳೆ ಮಾರುಕಟ್ಟೆ",
+    nav_equip: "ಉಪಕರಣಗಳು",
+    nav_login: "ಲಾಗಿನ್/ಸೈನ್‌ಅಪ್",
+    nav_dashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    nav_logout: "ಲಾಗ್‌ಔಟ್"
+  },
+  te: {
+    hero_title: "రైతుల శక్తి,<br> వ్యవసాయం మారుస్తోంది",
+    hero_lead: "రైతులకు న్యాయమైన ధరలు, చౌకగా పరికరాలు అద్దెకు ఇవ్వడం మరియు వాతావరణానికి అనుగుణంగా ప్రణాళిక చేసేందుకు సహాయపడే పారదర్శక వేదిక.",
+    sell_btn: "మీ పంటలను అమ్మండి",
+    equip_btn: "పరికరాలు కనుగొనండి",
+    widget_title: "🔎 మార్కెట్ ధర తనిఖీ",
+    widget_result: "మీ పంట మరియు ప్రాంతానికి తాజా ధర పొందండి.",
+    nav_home: "హోమ్",
+    nav_market: "పంట మార్కెట్",
+    nav_equip: "పరికరాలు",
+    nav_login: "లాగిన్/సైన్‌అప్",
+    nav_dashboard: "డాష్‌బోర్డ్",
+    nav_logout: "లాగ్‌ఔట్"
+  },
+  ta: {
+    hero_title: "விவசாயிகளை அதிகாரப்படுத்துதல்,<br> வேளாண்மையை மாற்றுதல்",
+    hero_lead: "விவசாயிகளுக்கு நியாயமான விலை கிடைக்க, மலிவான கருவிகளை வாடகைக்கு பெற மற்றும் வானிலைப் பொருத்தமாக திட்டமிட உதவும் வெளிப்படையான தளம்.",
+    sell_btn: "உங்கள் பயிர்களை விற்கவும்",
+    equip_btn: "கருவிகளை கண்டுபிடிக்கவும்",
+    widget_title: "🔎 சந்தை விலை பார்க்க",
+    widget_result: "உங்கள் பயிர் மற்றும் பகுதியின் சமீபத்திய விலையைப் பெறுங்கள்.",
+    nav_home: "முகப்பு",
+    nav_market: "பயிர் சந்தை",
+    nav_equip: "கருவிகள்",
+    nav_login: "உள்நுழை/பதிவு செய்",
+    nav_dashboard: "டாஷ்போர்ட்",
+    nav_logout: "வெளியேறு"
+  }
+};
+
+function changeLanguage(){
+  const lang = document.getElementById("langSelect").value;
+  localStorage.setItem("lang", lang);
+
+  document.querySelector(".hero-text h1").innerHTML = translations[lang].hero_title;
+  document.querySelector(".lead").textContent = translations[lang].hero_lead;
+  document.querySelector(".btn-primary").textContent = translations[lang].sell_btn;
+  document.querySelector(".btn-secondary").textContent = translations[lang].equip_btn;
+
+  document.querySelector("#priceWidget h3").textContent = translations[lang].widget_title;
+  document.querySelector("#priceResult").textContent = translations[lang].widget_result;
+
+  const links = document.querySelectorAll("#navbar-links li a");
+  links[0].textContent = translations[lang].nav_home;
+  links[1].textContent = translations[lang].nav_market;
+  links[2].textContent = translations[lang].nav_equip;
+  document.querySelector("#login-link a").textContent = translations[lang].nav_login;
+  document.querySelector("#dashboard-link a").textContent = translations[lang].nav_dashboard;
+  document.querySelector("#logout-link a").textContent = translations[lang].nav_logout;
+}
+
+window.addEventListener("load", ()=>{
+  const savedLang = localStorage.getItem("lang") || "en";
+  document.getElementById("langSelect").value = savedLang;
+  changeLanguage();
+});
 </script>
+
 </body>
 </html>
