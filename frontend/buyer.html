@@ -83,6 +83,10 @@
     }
     .buy-btn:hover { background: var(--dark); }
 
+    /* Market Insights smaller */
+    #insights canvas { max-height:250px; }
+    .card#insights { padding:16px; }
+
     /* Responsive */
     @media(max-width:900px){
       .container { flex-direction:column; }
@@ -161,66 +165,44 @@ if(!user.id || user.role!=="buyer") window.location="index.html";
 
 /* Navbar toggle */
 function toggleMenu(){ document.getElementById("navbar-links").classList.toggle("show"); }
-
 /* Logout */
 function logout(){ localStorage.removeItem("user"); window.location="index.html"; }
 
 /* ===== Translations ===== */
 const translations = {
-  en: {
-    nav_home:"Home", nav_market:"Crop Marketplace", nav_equip:"Equipment", nav_logout:"Logout",
-    sb_title:"Buyer Menu", sb_browse:"🛒 Browse Crops", sb_orders:"📦 My Orders", sb_insights:"📊 Market Insights",
-    card_market:"🛒 Available Crops", card_orders:"📦 My Orders", card_insights:"📊 Market Insights",
-    list_empty:"No crops listed yet.", buy:"Buy",
-    units:"units", at:"@", farmer:"Farmer",
-    order_item:"Order",
-    chart_avg:"Avg Price (₹)", chart_qty:"Total Units",
-    weather_loading:"Loading weather...", weather_unavail:"Weather unavailable"
-  },
-  hi: {
-    nav_home:"मुखपृष्ठ", nav_market:"फसल बाज़ार", nav_equip:"उपकरण", nav_logout:"लॉगआउट",
-    sb_title:"खरीदार मेनू", sb_browse:"🛒 फसलें देखें", sb_orders:"📦 मेरे ऑर्डर", sb_insights:"📊 बाज़ार विश्लेषण",
-    card_market:"🛒 उपलब्ध फसलें", card_orders:"📦 मेरे ऑर्डर", card_insights:"📊 बाज़ार विश्लेषण",
-    list_empty:"अभी कोई फसल सूचीबद्ध नहीं है।", buy:"खरीदें",
-    units:"यूनिट", at:"@", farmer:"किसान",
-    order_item:"आर्डर",
-    chart_avg:"औसत मूल्य (₹)", chart_qty:"कुल यूनिट",
-    weather_loading:"मौसम लोड हो रहा है...", weather_unavail:"मौसम उपलब्ध नहीं"
-  },
-  kn: {
-    nav_home:"ಮುಖಪುಟ", nav_market:"ಬೆಳೆ ಮಾರುಕಟ್ಟೆ", nav_equip:"ಉಪಕರಣಗಳು", nav_logout:"ಲಾಗ್‌ಔಟ್",
-    sb_title:"ಖರೀದಿದಾರರ ಮೆನು", sb_browse:"🛒 ಬೆಳೆಗಳನ್ನು ನೋಡಿರಿ", sb_orders:"📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು", sb_insights:"📊 ಮಾರುಕಟ್ಟೆ ಒಳನೋಟಗಳು",
-    card_market:"🛒 ಲಭ್ಯವಿರುವ ಬೆಳೆಗಳು", card_orders:"📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು", card_insights:"📊 ಮಾರುಕಟ್ಟೆ ಒಳನೋಟಗಳು",
-    list_empty:"ಇನ್ನೂ ಯಾವುದೇ ಬೆಳೆಗಳಿಲ್ಲ.", buy:"ಖರೀದಿ",
-    units:"ಘಟಕ", at:"@", farmer:"ರೈತ",
-    order_item:"ಆರ್ಡರ್",
-    chart_avg:"ಸರಾಸರಿ ಬೆಲೆ (₹)", chart_qty:"ಒಟ್ಟು ಘಟಕಗಳು",
-    weather_loading:"ಹವಾಮಾನ ಲೋಡ್ ಆಗುತ್ತಿದೆ...", weather_unavail:"ಹವಾಮಾನ ಲಭ್ಯವಿಲ್ಲ"
-  },
-  te: {
-    nav_home:"హోమ్", nav_market:"పంట మార్కెట్", nav_equip:"పరికరాలు", nav_logout:"లాగ్‌ఔట్",
-    sb_title:"కొనుగోలుదారు మెను", sb_browse:"🛒 పంటలను బ్రౌజ్ చేయండి", sb_orders:"📦 నా ఆర్డర్లు", sb_insights:"📊 మార్కెట్ లోతులు",
-    card_market:"🛒 లభ్యమైన పంటలు", card_orders:"📦 నా ఆర్డర్లు", card_insights:"📊 మార్కెట్ లోతులు",
-    list_empty:"ఇంకా పంటలు లిస్టు కాలేదు.", buy:"కొనండి",
-    units:"యూనిట్స్", at:"@", farmer:"రైతు",
-    order_item:"ఆర్డర్",
-    chart_avg:"సగటు ధర (₹)", chart_qty:"మొత్తం యూనిట్స్",
-    weather_loading:"వాతావరణం లోడ్ అవుతోంది...", weather_unavail:"వాతావరణం అందుబాటులో లేదు"
-  },
-  ta: {
-    nav_home:"முகப்பு", nav_market:"பயிர் சந்தை", nav_equip:"கருவிகள்", nav_logout:"வெளியேறு",
-    sb_title:"கொள்முதல் மெனு", sb_browse:"🛒 பயிர்களை உலாவுக", sb_orders:"📦 என் ஆர்டர்கள்", sb_insights:"📊 சந்தை பார்வைகள்",
-    card_market:"🛒 கிடைக்கும் பயிர்கள்", card_orders:"📦 என் ஆர்டர்கள்", card_insights:"📊 சந்தை பார்வைகள்",
-    list_empty:"இன்னும் பயிர்கள் பட்டியலிடப்படவில்லை.", buy:"வாங்கு",
-    units:"அலகுகள்", at:"@", farmer:"விவசாயி",
-    order_item:"ஆர்டர்",
-    chart_avg:"சராசரி விலை (₹)", chart_qty:"மொத்த அலகுகள்",
-    weather_loading:"வானிலை ஏற்றுகிறது...", weather_unavail:"வானிலை இல்லை"
-  }
+  en: { nav_home:"Home", nav_market:"Crop Marketplace", nav_equip:"Equipment", nav_logout:"Logout",
+        sb_title:"Buyer Menu", sb_browse:"🛒 Browse Crops", sb_orders:"📦 My Orders", sb_insights:"📊 Market Insights",
+        card_market:"🛒 Available Crops", card_orders:"📦 My Orders", card_insights:"📊 Market Insights",
+        list_empty:"No crops listed yet.", buy:"Buy", units:"units", at:"@", farmer:"Farmer",
+        order_item:"Order", chart_avg:"Avg Price (₹)", chart_qty:"Total Units",
+        weather_loading:"Loading weather...", weather_unavail:"Weather unavailable" },
+  hi: { nav_home:"मुखपृष्ठ", nav_market:"फसल बाज़ार", nav_equip:"उपकरण", nav_logout:"लॉगआउट",
+        sb_title:"खरीदार मेनू", sb_browse:"🛒 फसलें देखें", sb_orders:"📦 मेरे ऑर्डर", sb_insights:"📊 बाज़ार विश्लेषण",
+        card_market:"🛒 उपलब्ध फसलें", card_orders:"📦 मेरे ऑर्डर", card_insights:"📊 बाज़ार विश्लेषण",
+        list_empty:"अभी कोई फसल सूचीबद्ध नहीं है।", buy:"खरीदें", units:"यूनिट", at:"@", farmer:"किसान",
+        order_item:"आर्डर", chart_avg:"औसत मूल्य (₹)", chart_qty:"कुल यूनिट",
+        weather_loading:"मौसम लोड हो रहा है...", weather_unavail:"मौसम उपलब्ध नहीं" },
+  kn: { nav_home:"ಮುಖಪುಟ", nav_market:"ಬೆಳೆ ಮಾರುಕಟ್ಟೆ", nav_equip:"ಉಪಕರಣಗಳು", nav_logout:"ಲಾಗ್‌ಔಟ್",
+        sb_title:"ಖರೀದಿದಾರರ ಮೆನು", sb_browse:"🛒 ಬೆಳೆಗಳನ್ನು ನೋಡಿರಿ", sb_orders:"📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು", sb_insights:"📊 ಮಾರುಕಟ್ಟೆ ಒಳನೋಟಗಳು",
+        card_market:"🛒 ಲಭ್ಯವಿರುವ ಬೆಳೆಗಳು", card_orders:"📦 ನನ್ನ ಆರ್ಡರ್‌ಗಳು", card_insights:"📊 ಮಾರುಕಟ್ಟೆ ಒಳನೋಟಗಳು",
+        list_empty:"ಇನ್ನೂ ಯಾವುದೇ ಬೆಳೆಗಳಿಲ್ಲ.", buy:"ಖರೀದಿ", units:"ಘಟಕ", at:"@", farmer:"ರೈತ",
+        order_item:"ಆರ್ಡರ್", chart_avg:"ಸರಾಸರಿ ಬೆಲೆ (₹)", chart_qty:"ಒಟ್ಟು ಘಟಕಗಳು",
+        weather_loading:"ಹವಾಮಾನ ಲೋಡ್ ಆಗುತ್ತಿದೆ...", weather_unavail:"ಹವಾಮಾನ ಲಭ್ಯವಿಲ್ಲ" },
+  te: { nav_home:"హోమ్", nav_market:"పంట మార్కెట్", nav_equip:"పరికరాలు", nav_logout:"లాగ్‌ఔట్",
+        sb_title:"కొనుగోలుదారు మెను", sb_browse:"🛒 పంటలను బ్రౌజ్ చేయండి", sb_orders:"📦 నా ఆర్డర్లు", sb_insights:"📊 మార్కెట్ లోతులు",
+        card_market:"🛒 లభ్యమైన పంటలు", card_orders:"📦 నా ఆర్డర్లు", card_insights:"📊 మార్కెట్ లోతులు",
+        list_empty:"ఇంకా పంటలు లిస్టు కాలేదు.", buy:"కొనండి", units:"యూనిట్స్", at:"@", farmer:"రైతు",
+        order_item:"ఆర్డర్", chart_avg:"సగటు ధర (₹)", chart_qty:"మొత్తం యూనిట్స్",
+        weather_loading:"వాతావరణం లోడ్ అవుతోంది...", weather_unavail:"వాతావరణం అందుబాటులో లేదు" },
+  ta: { nav_home:"முகப்பு", nav_market:"பயிர் சந்தை", nav_equip:"கருவிகள்", nav_logout:"வெளியேறு",
+        sb_title:"கொள்முதல் மெனு", sb_browse:"🛒 பயிர்களை உலாவுக", sb_orders:"📦 என் ஆர்டர்கள்", sb_insights:"📊 சந்தை பார்வைகள்",
+        card_market:"🛒 கிடைக்கும் பயிர்கள்", card_orders:"📦 என் ஆர்டர்கள்", card_insights:"📊 சந்தை பார்வைகள்",
+        list_empty:"இன்னும் பயிர்கள் பட்டியலிடப்படவில்லை.", buy:"வாங்கு", units:"அலகுகள்", at:"@", farmer:"விவசாயி",
+        order_item:"ஆர்டர்", chart_avg:"சராசரி விலை (₹)", chart_qty:"மொத்த அலகுகள்",
+        weather_loading:"வானிலை ஏற்றுகிறது...", weather_unavail:"வானிலை இல்லை" }
 };
 
 function t(){ return translations[localStorage.getItem("lang") || "en"]; }
-
 function changeLanguage(){
   const lang = document.getElementById("langSelect").value;
   localStorage.setItem("lang", lang);
@@ -230,7 +212,6 @@ function changeLanguage(){
   document.getElementById("nav_market").textContent = L.nav_market;
   document.getElementById("nav_equip").textContent = L.nav_equip;
   document.getElementById("nav_logout").textContent = L.nav_logout;
-
   document.getElementById("sb_title").textContent = L.sb_title;
   document.getElementById("sb_browse").textContent = L.sb_browse;
   document.getElementById("sb_orders").textContent = L.sb_orders;
@@ -238,7 +219,6 @@ function changeLanguage(){
   document.getElementById("card_market").textContent = L.card_market;
   document.getElementById("card_orders").textContent = L.card_orders;
   document.getElementById("card_insights").textContent = L.card_insights;
-
   const wl = document.getElementById("weatherLoading");
   if(wl) wl.textContent = L.weather_loading;
 
@@ -246,7 +226,7 @@ function changeLanguage(){
   loadOrders();
 }
 
-/* Load Crops */
+/* ===== Load Crops ===== */
 async function loadCrops(){
   const res = await fetch(API+"/crops");
   const crops = await res.json();
@@ -263,35 +243,40 @@ async function loadCrops(){
   generateInsights(crops);
 }
 
-/* Buy Crop */
+/* ===== Buy Crop & Store Order ===== */
 async function buyCrop(crop_id, farmer_id, price){
-  const res = await fetch(API+"/orders", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ buyer_id: user.id, crop_id, farmer_id, price })
-  });
-  const data = await res.json();
-  alert(data.message || data.error);
-  loadOrders();
+  const L = t();
+  try{
+    const res = await fetch(API+"/orders", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ buyer_id: user.id, crop_id, farmer_id, price })
+    });
+    const data = await res.json();
+    if(data.error){ alert("Error: "+data.error); return; }
+    alert("✅ "+L.order_item+" #"+data.id+" placed successfully!");
+    loadOrders();
+  }catch(err){ alert("Error placing order: "+err); }
 }
 
-/* Load Orders */
+/* ===== Load Orders ===== */
 async function loadOrders(){
   const res = await fetch(API+"/orders?buyer_id="+user.id);
   const orders = await res.json();
   const L = t();
-  document.getElementById("ordersList").innerHTML =
-    orders.map(o=>`<li><span>${L.order_item} #${o.id}: ${o.crop_name} ${L.at} ₹${o.price}</span></li>`).join("");
+  const el = document.getElementById("ordersList");
+  if(!orders.length){ el.innerHTML=`<li><span>${L.list_empty}</span></li>`; return; }
+  el.innerHTML = orders.map(o=>`<li><span>${L.order_item} #${o.id}: ${o.crop_name} ${L.at} ₹${o.price}</span></li>`).join("");
 }
 
-/* Generate Market Insights */
+/* ===== Generate Market Insights ===== */
 let chartRef = null;
 function generateInsights(crops){
   const L = t();
   if(!crops.length) return;
   const cropStats = {};
   crops.forEach(c=>{
-    if(!cropStats[c.crop_name]) cropStats[c.crop_name] = { totalPrice:0, count:0, qty:0 };
+    if(!cropStats[c.crop_name]) cropStats[c.crop_name]={ totalPrice:0,count:0,qty:0 };
     cropStats[c.crop_name].totalPrice += c.price;
     cropStats[c.crop_name].count++;
     cropStats[c.crop_name].qty += c.quantity;
@@ -315,7 +300,7 @@ function generateInsights(crops){
   });
 }
 
-/* Weather */
+/* ===== Weather ===== */
 async function loadWeather(){
   const el = document.getElementById('weatherStrip');
   const L = t();
@@ -329,13 +314,11 @@ async function loadWeather(){
   }catch(e){ el.innerHTML = `<span>${L.weather_unavail}</span>`; }
 }
 
-/* Init */
+/* ===== Init ===== */
 (function init(){
   const savedLang = localStorage.getItem("lang") || "en";
   document.getElementById("langSelect").value = savedLang;
   changeLanguage();
-  loadCrops();
-  loadOrders();
   loadWeather();
 })();
 </script>

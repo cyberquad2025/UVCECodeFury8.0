@@ -122,10 +122,8 @@ ul.crops span { font-weight:500; }
 </head>
 <body>
 
-<!-- Weather -->
 <div class="weather-strip" id="weatherStrip"><span>Loading weather...</span></div>
 
-<!-- Navbar -->
 <nav>
   <div class="logo">🌾 AgriMitra</div>
   <span class="menu-toggle" onclick="toggleMenu()">☰</span>
@@ -139,7 +137,6 @@ ul.crops span { font-weight:500; }
   </select>
 </nav>
 
-<!-- Layout -->
 <div class="container">
   <div class="sidebar">
     <h3 id="menu-title">Farmer Menu</h3>
@@ -154,6 +151,7 @@ ul.crops span { font-weight:500; }
     <div class="card" id="addCrop">
       <h2 id="add-title">➕ Add New Crop</h2>
       <form id="cropForm">
+        <input type="hidden" id="editCropId">
         <div class="crop-field">
           <input type="text" id="cropName" placeholder=" " required>
           <label for="cropName">Crop Name</label>
@@ -193,16 +191,17 @@ let user = JSON.parse(localStorage.getItem("user") || "{}");
 if(!user.id || user.role!=="farmer") window.location="index.html";
 
 const translations = {
-  en:{menu:"Farmer Menu", add_title:"➕ Add New Crop", add_btn:"Add Crop", my_title:"🌱 My Crops", insights_title:"📊 Market Insights", insights_text:"Coming soon: price comparison graphs, demand forecasts and more."},
-  hi:{menu:"किसान मेन्यू", add_title:"➕ नई फसल जोड़ें", add_btn:"जोड़ें", my_title:"🌱 मेरी फसलें", insights_title:"📊 मार्केट इनसाइट्स", insights_text:"जल्द आ रहा है: कीमत तुलना ग्राफ़, मांग पूर्वानुमान और अधिक।"},
-  ta:{menu:"விவசாயி மெனு", add_title:"➕ புதிய பயிர் சேர்க்கவும்", add_btn:"சேர்க்கவும்", my_title:"🌱 என் பயிர்கள்", insights_title:"📊 சந்தை அறிவுரைகள்", insights_text:"விரைவில்: விலை ஒப்பீடு வரைபடங்கள், தேவைக் கணிப்புகள் மற்றும் மேலும்."},
-  te:{menu:"రైతు మెనూ", add_title:"➕ కొత్త పంట చేర్చు", add_btn:"చేర్చు", my_title:"🌱 నా పంటలు", insights_title:"📊 మార్కెట్ సమాచారాలు", insights_text:"చిన్న కాలంలో: ధరల సరిపోలిక గ్రాఫ్‌లు, డిమాండ్ అంచనాలు మరియు మరిన్ని."},
-  kn:{menu:"ರೈತ ಮೆನು", add_title:"➕ ಹೊಸ ಬೆಳೆ ಸೇರಿಸಿ", add_btn:"ಸೇರಿಸಿ", my_title:"🌱 ನನ್ನ ಬೆಳೆಗಳು", insights_title:"📊 ಮಾರುಕಟ್ಟೆ ಮಾಹಿತಿ", insights_text:"ಬಗ್ಗೆ ಬರುತ್ತಿದೆ: ಬೆಲೆ ಹೋಲಿಕೆ ಗ್ರಾಫ್‌ಗಳು, ಬೇಡಿಕೆಯ ಅಂದಾಜು ಮತ್ತು ಇನ್ನಷ್ಟು."}
+  en:{menu:"Farmer Menu", add_title:"➕ Add New Crop", add_btn:"Add Crop", update_btn:"Update Crop", my_title:"🌱 My Crops", insights_title:"📊 Market Insights", insights_text:"Coming soon: price comparison graphs, demand forecasts and more."},
+  hi:{menu:"किसान मेन्यू", add_title:"➕ नई फसल जोड़ें", add_btn:"जोड़ें", update_btn:"अपडेट करें", my_title:"🌱 मेरी फसलें", insights_title:"📊 मार्केट इनसाइट्स", insights_text:"जल्द आ रहा है: कीमत तुलना ग्राफ़, मांग पूर्वानुमान और अधिक।"},
+  ta:{menu:"விவசாயி மெனு", add_title:"➕ புதிய பயிர் சேர்க்கவும்", add_btn:"சேர்க்கவும்", update_btn:"புதுப்பிக்கவும்", my_title:"🌱 என் பயிர்கள்", insights_title:"📊 சந்தை அறிவுரைகள்", insights_text:"விரைவில்: விலை ஒப்பீடு வரைபடங்கள், தேவைக் கணிப்புகள் மற்றும் மேலும்."},
+  te:{menu:"రైతు మెనూ", add_title:"➕ కొత్త పంట చేర్చు", add_btn:"చేర్చు", update_btn:"నవీకరించు", my_title:"🌱 నా పంటలు", insights_title:"📊 మార్కెట్ సమాచారాలు", insights_text:"చిన్న కాలంలో: ధరల సరిపోలిక గ్రాఫ్‌లు, డిమాండ్ అంచనాలు మరియు మరిన్ని."},
+  kn:{menu:"ರೈತ ಮೆನು", add_title:"➕ ಹೊಸ ಬೆಳೆ ಸೇರಿಸಿ", add_btn:"ಸೇರಿಸಿ", update_btn:"ನವೀಕರಿಸಿ", my_title:"🌱 ನನ್ನ ಬೆಳೆಗಳು", insights_title:"📊 ಮಾರುಕಟ್ಟೆ ಮಾಹಿತಿ", insights_text:"ಬಗ್ಗೆ ಬರುತ್ತಿದೆ: ಬೆಲೆ ಹೋಲಿಕೆ ಗ್ರಾಫ್‌ಗಳು, ಬೇಡಿಕೆಯ ಅಂದಾಜು ಮತ್ತು ಇನ್ನಷ್ಟು."}
 };
+
 let lang = localStorage.getItem("lang") || "en";
 
 function applyTranslations(){
-  L = translations[localStorage.getItem("lang")||"en"];
+  const L = translations[lang];
   document.getElementById("langSelect").value = lang;
   document.getElementById("menu-title").textContent = L.menu;
   document.getElementById("add-title").textContent = L.add_title;
@@ -224,30 +223,85 @@ function logout(){ localStorage.removeItem("user"); window.location="index.html"
 // Crop form submit
 document.getElementById("cropForm").addEventListener("submit", async e=>{
   e.preventDefault();
+  const cropId = document.getElementById("editCropId").value;
   const formData = new FormData();
+  
   formData.append("farmer_id", user.id);
   formData.append("crop_name", document.getElementById("cropName").value);
   formData.append("quantity", +document.getElementById("quantity").value);
   formData.append("price", +document.getElementById("price").value);
+  
   const imgFile = document.getElementById("cropImage").files[0];
-  if(imgFile) formData.append("image_url", imgFile.name); // send filename to backend
-  const res = await fetch(API+"/crops", {method:"POST", body: formData});
-  const data = await res.json();
-  alert(data.message||data.error);
-  document.getElementById("cropForm").reset();
-  cropPreview.style.display="none";
-  loadCrops();
+  if(imgFile){
+    formData.append("image", imgFile);
+  } else if (cropId && cropPreview.src) {
+    formData.append("image_url", cropPreview.src.split('/').pop());
+  }
+
+  let url = API + "/crops"; 
+  let method = "POST";
+  
+  if(cropId){
+    url += `/${cropId}`;
+    method = "PUT";
+  }
+
+  try{
+    const res = await fetch(url, { method, body: formData });
+    const data = await res.json();
+    alert(data.message || data.error);
+    resetForm();
+    loadCrops();
+  }catch(err){
+    alert("Error: " + err);
+  }
 });
+
+function resetForm(){
+  document.getElementById("cropForm").reset();
+  document.getElementById("editCropId").value="";
+  cropPreview.style.display="none";
+  document.getElementById("add-btn").textContent=translations[lang].add_btn;
+}
 
 // Load crops
 async function loadCrops(){
   const res = await fetch(API+"/crops?farmer_id="+user.id);
   const crops = await res.json();
-  document.getElementById("cropsList").innerHTML = crops.map(c=>`
-    <li>
+  const list = document.getElementById("cropsList");
+  list.innerHTML = crops.map(c=>`
+    <li data-id="${c.id}">
       ${c.image_url?`<img src="${API}/${c.image_url}">`:''}
       <span>${c.crop_name} - ${c.quantity} units @ ₹${c.price}</span>
-    </li>`).join("");
+      <div style="margin-left:auto; display:flex; gap:6px; flex-wrap:wrap;">
+        <button onclick="editCrop(${c.id})" style="padding:4px 8px; background:#40916c; color:#fff; border:none; border-radius:6px; cursor:pointer;">Edit</button>
+        <button onclick="deleteCrop(${c.id})" style="padding:4px 8px; background:#e63946; color:#fff; border:none; border-radius:6px; cursor:pointer;">Delete</button>
+      </div>
+    </li>
+  `).join("");
+}
+
+// Edit crop
+async function editCrop(id){
+  const res = await fetch(API+"/crops/"+id);
+  const c = await res.json();
+  document.getElementById("cropName").value=c.crop_name;
+  document.getElementById("quantity").value=c.quantity;
+  document.getElementById("price").value=c.price;
+  document.getElementById("editCropId").value=c.id;
+  if(c.image_url){ cropPreview.src=API+"/"+c.image_url; cropPreview.style.display="block"; }
+  document.getElementById("add-btn").textContent = translations[lang].update_btn;
+  window.location="#addCrop";
+}
+
+// Delete crop
+async function deleteCrop(id){
+  if(confirm("Are you sure you want to delete this crop?")){
+    const res = await fetch(API+"/crops/"+id, {method:"DELETE"});
+    const data = await res.json();
+    alert(data.message||data.error);
+    loadCrops();
+  }
 }
 
 // Image preview
@@ -255,10 +309,8 @@ const cropImageInput = document.getElementById('cropImage');
 const cropPreview = document.getElementById('cropPreview');
 cropImageInput.addEventListener('change', () => {
   const file = cropImageInput.files[0];
-  if(file){
-    cropPreview.src = URL.createObjectURL(file);
-    cropPreview.style.display = "block";
-  } else { cropPreview.style.display = "none"; }
+  if(file){ cropPreview.src = URL.createObjectURL(file); cropPreview.style.display="block"; } 
+  else { cropPreview.style.display = "none"; }
 });
 
 // Weather
@@ -266,12 +318,12 @@ async function loadWeather(){
   const el = document.getElementById('weatherStrip');
   try{
     const pos = await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej));
-    const {latitude:lat,longitude:lon} = pos.coords;
-    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-    const j = await r.json(); const w = j.current_weather;
-    el.innerHTML = `<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
-                    <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
-  }catch(e){ el.innerHTML = "<span>Weather unavailable</span>"; }
+    const {latitude:lat,longitude:lon}=pos.coords;
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+    const j=await r.json(); const w=j.current_weather;
+    el.innerHTML=`<span class="weather-pill">🌡️ ${Math.round(w.temperature)}°C</span>
+                  <span class="weather-pill">💨 ${w.windspeed} km/h</span>`;
+  }catch(e){ el.innerHTML="<span>Weather unavailable</span>"; }
 }
 
 applyTranslations();

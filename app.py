@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory, abort
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sqlite3
 import os
@@ -25,43 +25,13 @@ def get_db():
 
 def init_db():
     schema_path = Path("schema.sql")
+    conn = get_db()
     if schema_path.exists():
         with open(schema_path, "r", encoding="utf-8") as f:
-            schema = f.read()
-        conn = get_db()
-        conn.executescript(schema)
-        conn.commit()
-        conn.close()
-
-    conn = get_db()
-    # Ensure market_prices table exists
-    conn.execute("""
-    CREATE TABLE IF NOT EXISTS market_prices (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      crop_name TEXT NOT NULL,
-      region TEXT NOT NULL,
-      min_price REAL NOT NULL,
-      max_price REAL NOT NULL,
-      avg_price REAL NOT NULL,
-      unit TEXT NOT NULL DEFAULT 'kg',
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-    """)
-    conn.execute("""
-    CREATE TABLE IF NOT EXISTS crops (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      farmer_id INTEGER NOT NULL,
-      crop_name TEXT NOT NULL,
-      quantity REAL NOT NULL,
-      price REAL NOT NULL,
-      image_url TEXT,
-      FOREIGN KEY(farmer_id) REFERENCES users(id)
-    );
-    """)
+            conn.executescript(f.read())
     conn.commit()
     conn.close()
 
-# Initialize DB
 if not os.path.exists(DB_PATH):
     init_db()
 else:
@@ -72,7 +42,7 @@ else:
 def health():
     return jsonify({"ok": True, "service": "AgriMitra Flask API", "db": os.path.abspath(DB_PATH)})
 
-# ---------- Auth (signup/login) ----------
+# ---------- Auth ----------
 @app.post("/signup")
 def signup():
     data = request.get_json(force=True)
@@ -80,23 +50,19 @@ def signup():
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
     role = (data.get("role") or "").strip()
-
     if not all([name, email, password, role]) or role not in ("farmer", "buyer"):
         return jsonify({"error": "Invalid payload"}), 400
-
     pwd_hash = generate_password_hash(password)
     conn = get_db()
     try:
         cur = conn.execute(
             "INSERT INTO users (name,email,password_hash,role) VALUES (?,?,?,?)",
-            (name, email, pwd_hash, role),
+            (name, email, pwd_hash, role)
         )
         conn.commit()
         user_id = cur.lastrowid
-        return jsonify({
-            "message": "Signup successful",
-            "user": {"id": user_id, "name": name, "email": email, "role": role}
-        })
+        return jsonify({"message": "Signup successful",
+                        "user": {"id": user_id, "name": name, "email": email, "role": role}})
     except sqlite3.IntegrityError:
         return jsonify({"error": "Email already registered"}), 409
     finally:
@@ -109,12 +75,10 @@ def login():
     password = data.get("password") or ""
     if not email or not password:
         return jsonify({"error": "Email and password required"}), 400
-
     conn = get_db()
     cur = conn.execute("SELECT * FROM users WHERE email = ?", (email,))
     user = cur.fetchone()
     conn.close()
-
     if user and check_password_hash(user["password_hash"], password):
         return jsonify({
             "message": "Login successful",
@@ -129,7 +93,7 @@ def add_crop():
     crop_name = (request.form.get("crop_name") or "").strip()
     quantity = request.form.get("quantity")
     price = request.form.get("price")
-    image = request.files.get("image")  # actual file
+    image = request.files.get("image")
 
     if not all([farmer_id, crop_name, quantity, price]):
         return jsonify({"error": "Missing fields"}), 400
@@ -144,7 +108,7 @@ def add_crop():
     conn = get_db()
     cur = conn.execute(
         "INSERT INTO crops (farmer_id, crop_name, quantity, price, image_url) VALUES (?,?,?,?,?)",
-        (farmer_id, crop_name, quantity, price, image_url),
+        (farmer_id, crop_name, quantity, price, image_url)
     )
     conn.commit()
     new_id = cur.lastrowid
@@ -153,14 +117,109 @@ def add_crop():
 
 @app.get("/crops")
 def list_crops():
-    farmer_id = request.args.get("farmer_id")
     conn = get_db()
-    sql = "SELECT c.*, u.name as farmer_name FROM crops c JOIN users u ON u.id=c.farmer_id WHERE 1=1"
+    sql = """
+    SELECT c.*, u.name as farmer_name
+    FROM crops c
+    JOIN users u ON u.id=c.farmer_id
+    """
+    cur = conn.execute(sql)
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return jsonify(rows)
+
+# ---------- Orders ----------
+@app.post("/orders")
+def create_order():
+    data = request.get_json(force=True)
+    buyer_id = data.get("buyer_id")
+    crop_id = data.get("crop_id")
+    bid_price = data.get("price")
+    if not all([buyer_id, crop_id, bid_price]):
+        return jsonify({"error": "Missing fields"}), 400
+    conn = get_db()
+    cur = conn.execute(
+        "INSERT INTO orders (buyer_id, crop_id, bid_price) VALUES (?,?,?)",
+        (buyer_id, crop_id, bid_price)
+    )
+    conn.commit()
+    order_id = cur.lastrowid
+    conn.close()
+    return jsonify({"id": order_id, "message": "Order placed successfully"}), 201
+
+@app.get("/orders")
+def list_orders():
+    buyer_id = request.args.get("buyer_id", type=int)
+    conn = get_db()
+    sql = """
+    SELECT o.id, o.buyer_id, o.crop_id, o.bid_price as price, o.status, c.crop_name
+    FROM orders o
+    JOIN crops c ON c.id=o.crop_id
+    """
     params = []
-    if farmer_id:
-        sql += " AND c.farmer_id = ?"
-        params.append(farmer_id)
+    if buyer_id:
+        sql += " WHERE o.buyer_id = ?"
+        params.append(buyer_id)
     cur = conn.execute(sql, tuple(params))
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return jsonify(rows)
+
+# ---------- Equipment ----------
+@app.post("/equipment")
+def add_equipment():
+    farmer_id = request.form.get("farmer_id")
+    name = (request.form.get("name") or "").strip()
+    rent_price = request.form.get("rent_price")
+    if not all([farmer_id, name, rent_price]):
+        return jsonify({"error": "Missing fields"}), 400
+    conn = get_db()
+    cur = conn.execute(
+        "INSERT INTO equipment (farmer_id,name,rent_price) VALUES (?,?,?)",
+        (farmer_id,name,rent_price)
+    )
+    conn.commit()
+    equip_id = cur.lastrowid
+    conn.close()
+    return jsonify({"id": equip_id, "message": "Equipment added successfully"})
+
+@app.get("/equipment")
+def list_equipment():
+    conn = get_db()
+    cur = conn.execute("SELECT e.*, u.name as farmer_name FROM equipment e JOIN users u ON u.id=e.farmer_id")
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return jsonify(rows)
+
+# ---------- Rentals ----------
+@app.post("/rentals")
+def create_rental():
+    data = request.get_json(force=True)
+    user_id = data.get("user_id")
+    equipment_id = data.get("equipment_id")
+    start_date = data.get("start_date")
+    end_date = data.get("end_date")
+    if not all([user_id, equipment_id, start_date, end_date]):
+        return jsonify({"error": "Missing fields"}), 400
+    conn = get_db()
+    cur = conn.execute(
+        "INSERT INTO rentals (user_id,equipment_id,start_date,end_date) VALUES (?,?,?,?)",
+        (user_id,equipment_id,start_date,end_date)
+    )
+    conn.commit()
+    rental_id = cur.lastrowid
+    conn.close()
+    return jsonify({"id": rental_id, "message": "Rental booked successfully"})
+
+@app.get("/rentals")
+def list_rentals():
+    conn = get_db()
+    cur = conn.execute("""
+        SELECT r.*, e.name as equipment_name, u.name as user_name
+        FROM rentals r
+        JOIN equipment e ON e.id=r.equipment_id
+        JOIN users u ON u.id=r.user_id
+    """)
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()
     return jsonify(rows)
